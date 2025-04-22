@@ -4,11 +4,11 @@
     "slug": "Free-SplitWise",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/dino-logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/dino-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
