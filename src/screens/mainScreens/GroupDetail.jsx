@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput, Button, TouchableOpacity, Alert, Platform, PermissionsAndroid, Pressable, Dimensions } from 'react-native';
 import * as Contacts from 'expo-contacts';
 import GroupContext from '../../store/context/GroupContext';
@@ -7,11 +7,11 @@ import Person from '../../models/Person';
 import CustomModal from '../../components/global/CustomModal';
 import AddMemberModal from '../../components/group/AddMemberModal';
 import Transaction from '../../models/Transaction';
-import TransactionModal from '../../components/group/TransactionModal';
+import TransactionModal from '../../components/transaction/TransactionModal';
 
 const {width, height} = Dimensions.get('screen')
 
-export default function GroupDetail({ route }) {
+export default function GroupDetail({ route, navigation }) {
     const { groupId } = route.params;
     const { groups, addMember, removeMember, addTransaction } = useContext(GroupContext);
     const [contacts, setContacts] = useState([]);
@@ -35,113 +35,6 @@ export default function GroupDetail({ route }) {
 
     const currentUserId = group?.members[0]?.id;
 
-    // const TransactionModal = ()=>{
-    //     return (
-    //         <CustomModal 
-    //             visible={showAddTxModal} 
-    //             dismiss={() => setShowAddTxModal(false)}
-    //             modalContentStyle={{backgroundColor:"#fff", paddingHorizontal:12, borderRadius:22}}
-    //             modalOverlayStyle={{backgroundColor:"rgba(0,0,0,0.5)", paddingHorizontal:12}}
-    //         >
-    //             <View style={styles.modalWrapper}>
-    //                 <Text style={styles.modalTitle}>New Transaction</Text>
-
-    //                 <TextInput placeholder="Description" value={desc} onChangeText={setDesc} style={styles.input} />
-    //                 <TextInput placeholder="Amount" value={amount} onChangeText={setAmount} keyboardType="numeric" style={styles.input} />
-
-    //                 <Text style={styles.label}>Paid by:</Text>
-    //                 <FlatList
-    //                 data={group.members}
-    //                 horizontal
-    //                 keyExtractor={(item) => item.id}
-    //                 renderItem={({ item }) => (
-    //                     <Pressable onPress={() => setPaidBy(item.id)} style={{ marginRight: 10 }}>
-    //                     <Text style={{
-    //                         padding: 8,
-    //                         borderWidth: 1,
-    //                         borderColor: paidBy === item.id ? 'green' : '#ccc',
-    //                         borderRadius: 8
-    //                     }}>{item.name}</Text>
-    //                     </Pressable>
-    //                 )}
-    //                 />
-
-    //                 <Text style={styles.label}>Select Members Involved</Text>
-    //                 {group.members.map(member => (
-    //                 <View key={member.id} style={{ flexDirection: 'row', alignItems: 'center' }}>
-    //                     <Pressable onPress={() => {
-    //                     if (involvedMembers.includes(member.id)) {
-    //                         setInvolvedMembers(involvedMembers.filter(id => id !== member.id));
-    //                     } else {
-    //                         setInvolvedMembers([...involvedMembers, member.id]);
-    //                     }
-    //                     }}>
-    //                     <Text style={{
-    //                         padding: 4,
-    //                         margin: 4,
-    //                         borderWidth: 1,
-    //                         borderColor: involvedMembers.includes(member.id) ? 'blue' : '#ccc',
-    //                         borderRadius: 6
-    //                     }}>{member.name}</Text>
-    //                     </Pressable>
-    //                     {!isEqualSplit && involvedMembers.includes(member.id) && (
-    //                     <TextInput
-    //                         placeholder="₹"
-    //                         keyboardType="numeric"
-    //                         style={{ flex: 1, marginLeft: 10 }}
-    //                         value={memberShares[member.id]?.toString() || ''}
-    //                         onChangeText={(val) => setMemberShares(prev => ({ ...prev, [member.id]: parseFloat(val) || 0 }))}
-    //                     />
-    //                     )}
-    //                 </View>
-    //                 ))}
-
-    //                 <Pressable onPress={() => setIsEqualSplit(!isEqualSplit)}>
-    //                 <Text style={{ color: 'blue', marginTop: 10 }}>
-    //                     {isEqualSplit ? 'Switch to Unequal Split' : 'Switch to Equal Split'}
-    //                 </Text>
-    //                 </Pressable>
-
-    //                 <Button title="Create Transaction" onPress={() => {
-    //                 const amt = parseFloat(amount);
-    //                 if (!desc || isNaN(amt) || amt <= 0) return;
-
-    //                 let splits = [];
-    //                 if (isEqualSplit) {
-    //                     const share = +(amt / involvedMembers.length).toFixed(2);
-    //                     splits = involvedMembers.map(id => ({ personId: id, amount: share }));
-    //                 } else {
-    //                     const totalShare = involvedMembers.reduce((acc, id) => acc + (memberShares[id] || 0), 0);
-    //                     if (Math.abs(totalShare - amt) > 0.01) {
-    //                     Alert.alert("Amount mismatch", "Total split doesn't equal the amount");
-    //                     return;
-    //                     }
-    //                     splits = involvedMembers.map(id => ({
-    //                     personId: id,
-    //                     amount: +(memberShares[id] || 0).toFixed(2)
-    //                     }));
-    //                 }
-
-    //                 const tx = new Transaction({
-    //                     id: uuid.v4(),
-    //                     description: desc,
-    //                     amount: amt,
-    //                     paidBy,
-    //                     splits
-    //                 });
-
-    //                 addTransaction(groupId, tx);
-    //                 setShowAddTxModal(false);
-    //                 setDesc('');
-    //                 setAmount('');
-    //                 setInvolvedMembers(group.members.map(m => m.id));
-    //                 setIsEqualSplit(true);
-    //                 setMemberShares({});
-    //                 }} />
-    //             </View>
-    //         </CustomModal>
-    //     )
-    // }
 
     const renderTransactionItem = ({ item }) => {
         const payer = group.members.find(m => m.id === item.paidBy);
@@ -234,6 +127,12 @@ export default function GroupDetail({ route }) {
         }
         })();
     }, []);
+
+    useLayoutEffect(()=>{
+      navigation.setOptions({
+        headerShown: !showAddTxModal
+      })
+    },[showAddTxModal])
 
   return (
     <View style={styles.container}>

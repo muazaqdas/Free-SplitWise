@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import AuthContext from '../../store/context/AuthContext';
 import CustomButton from '../../components/global/CustomButton';
 import { COLOR } from '../../theme';
+import { LinearGradient } from 'expo-linear-gradient';
 const {width, height} = Dimensions.get('screen');
 const LOGO_SIZE = width 
 
@@ -39,57 +40,59 @@ const Login = () => {
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <ImageBackground style={styles.container} source={require('../../../assets/dino-4.jpeg')}/>
-          <View style={styles.contentContainer}>
-            <Text style={styles.header}>
-              SPLIT WISELY
-            </Text>
-            <Controller
-              control={control}
-              name="email"
-              defaultValue=""
-              rules={{ required: 'Email is required' }}
-              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <>
-                  <TextInput
-                    placeholder="Email"
-                    style={styles.input}
-                    onChangeText={onChange}
-                    value={value}
-                    autoCapitalize="none"
-                  />
-                  {error && <Text style={styles.error}>{error.message}</Text>}
-                </>
-              )}
-            />
+          <LinearGradient colors={[COLOR.tertiary, COLOR.primary]} start={{x: 0, y: 0.1}} style={styles.contentContainer}>
+            {/* <View style={styles.contentContainer}> */}
+              <Text style={styles.header}>
+                SPLIT WISELY
+              </Text>
+              <Controller
+                control={control}
+                name="email"
+                defaultValue=""
+                rules={{ required: 'Email is required' }}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <>
+                    <TextInput
+                      placeholder="Email"
+                      style={styles.input}
+                      onChangeText={onChange}
+                      value={value}
+                      autoCapitalize="none"
+                    />
+                    {error && <Text style={styles.error}>{error.message}</Text>}
+                  </>
+                )}
+              />
 
-            <Controller
-              control={control}
-              name="password"
-              defaultValue=""
-              rules={{ required: 'Password is required' }}
-              render={({ field: { onChange, value }, fieldState: { error } }) => (
-                <>
-                  <TextInput
-                    placeholder="Password"
-                    secureTextEntry
-                    style={styles.input}
-                    onChangeText={onChange}
-                    value={value}
-                  />
-                  {error && <Text style={styles.error}>{error.message}</Text>}
-                </>
-              )}
-            />
+              <Controller
+                control={control}
+                name="password"
+                defaultValue=""
+                rules={{ required: 'Password is required' }}
+                render={({ field: { onChange, value }, fieldState: { error } }) => (
+                  <>
+                    <TextInput
+                      placeholder="Password"
+                      secureTextEntry
+                      style={styles.input}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                    {error && <Text style={styles.error}>{error.message}</Text>}
+                  </>
+                )}
+              />
 
-            {/* <Button title="Login" onPress={handleSubmit(onSubmit)} /> */}
-            <CustomButton outerContainerStyle={{marginTop:10}} buttonText='Login' onPress={handleSubmit(onSubmit)} />
-            <Text
-              style={styles.link}
-              onPress={() => navigation.navigate('Signup')}
-            >
-              Don't have an account? Sign up
-            </Text>
-          </View>
+              {/* <Button title="Login" onPress={handleSubmit(onSubmit)} /> */}
+              <CustomButton outerContainerStyle={{marginTop:10}} buttonText='Login' onPress={handleSubmit(onSubmit)} />
+              <Text
+                style={styles.link}
+                onPress={() => navigation.navigate('Signup')}
+              >
+                Don't have an account? Sign up
+              </Text>
+            {/* </View> */}
+          </LinearGradient>
         </ScrollView>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -110,12 +113,12 @@ const styles = StyleSheet.create({
     bottom:20, 
     borderTopEndRadius:28, 
     borderTopStartRadius:28, 
-    backgroundColor:COLOR.tertiary, 
-    minHeight: (height - width + 20), 
+    // backgroundColor:COLOR.tertiary, 
+    minHeight: (height - width + 40), 
     elevation:2, 
-    shadowColor:COLOR.primaryText, 
+    shadowColor:COLOR.tertiary, 
     shadowOpacity: 0.5, 
-    shadowRadius:8,
+    shadowRadius:5,
     justifyContent:'center',
   },
   imageContainer:{
@@ -141,8 +144,8 @@ const styles = StyleSheet.create({
     borderBottomColor:COLOR.primaryText,
     padding: 10, 
     marginBottom: 10, 
-    color:COLOR.secondaryText 
+    color:COLOR.primaryText 
   },
   error: { color: 'red' },
-  link: { marginTop: 20, color: COLOR.secondary, textAlign: 'center' },
+  link: { marginTop: 20, color: COLOR.primaryText, textAlign: 'center' },
 });
