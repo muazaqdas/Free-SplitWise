@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput, Button, TouchableOpacity, Alert, Platform, PermissionsAndroid, Pressable, Dimensions } from 'react-native';
 import * as Contacts from 'expo-contacts';
+import { Ionicons } from '@expo/vector-icons'; // Top of file
 import GroupContext from '../../store/context/GroupContext';
 import uuid from 'react-native-uuid';
 import Person from '../../models/Person';
@@ -13,7 +14,7 @@ const {width, height} = Dimensions.get('screen')
 
 export default function GroupDetail({ route, navigation }) {
     const { groupId } = route.params;
-    const { groups, addMember, removeMember, addTransaction } = useContext(GroupContext);
+    const { groups, addMember, removeMember, addTransaction, removeTransaction } = useContext(GroupContext);
     const [contacts, setContacts] = useState([]);
     const [search, setSearch] = useState('');
     const [isAddMemberModalVisible, setAddMemberModalVisible] = useState(false);
@@ -30,6 +31,8 @@ export default function GroupDetail({ route, navigation }) {
     const [involvedMembers, setInvolvedMembers] = useState(group.members.map(m => m.id));
     const [memberShares, setMemberShares] = useState({});
     const [showMembers, setShowMembers] = useState(true);
+    const [isEditing, setEditing] = useState(false);
+
 
     if (!group) return <Text>Group not found</Text>;
 
@@ -37,28 +40,78 @@ export default function GroupDetail({ route, navigation }) {
 
 
     const renderTransactionItem = ({ item }) => {
-        const payer = group.members.find(m => m.id === item.paidBy);
-        const currentSplit = item.splits.find(s => s.personId === currentUserId);
-      
-        let note = '';
-        if (item.paidBy === currentUserId) {
-          const othersOwe = item.splits
-            .filter(s => s.personId !== currentUserId)
-            .reduce((sum, s) => sum + s.amount, 0);
-          note = `You will receive ₹${othersOwe.toFixed(2)} from others`;
-        } else if (currentSplit) {
-          note = `You owe ₹${currentSplit.amount.toFixed(2)} to ${payer?.name}`;
+      const payers = item.paidBy.map(entry => {
+        const member = group.members.find(m => m.id === entry.id);
+        return member ? `${member.name} (₹${entry.amount})` : `Unknown (₹${entry.amount})`;
+      }).join(', ');
+    
+      const currentSplit = item.splits.find(s => s.personId === currentUserId);
+    
+      let note = '';
+      const currentUserPaidEntry = item.paidBy.find(entry => entry.id === currentUserId);
+    
+      if (currentUserPaidEntry) {
+        const othersOwe = item.splits
+          .filter(s => s.personId !== currentUserId)
+          .reduce((sum, s) => sum + s.amount, 0);
+        note = `You will receive ₹${othersOwe.toFixed(2)} from others`;
+      } else if (currentSplit) {
+        const totalPaid = item.paidBy.reduce((sum, p) => sum + p.amount, 0);
+    
+        if (item.paidBy.length === 1) {
+          const payerMember = group.members.find(m => m.id === item.paidBy[0].id);
+          note = `You owe ₹${currentSplit.amount.toFixed(2)} to ${payerMember?.name || 'Unknown'}`;
+        } else {
+          const owedParts = item.paidBy.map(p => {
+            const shareRatio = p.amount / totalPaid;
+            const owedAmount = shareRatio * currentSplit.amount;
+            const payerMember = group.members.find(m => m.id === p.id);
+            return `${payerMember?.name || 'Unknown'} ₹${owedAmount.toFixed(2)}`;
+          }).join(', ');
+          note = `You owe: ${owedParts}`;
         }
-      
-        return (
-          <TouchableOpacity onPress={() => {/* navigate to detail */}}>
-            <Text style={styles.txItem}>
-              {item.description} - ₹{item.amount} by {payer?.name}
-            </Text>
-            {note ? <Text style={{ fontSize: 12, color: 'gray' }}>{note}</Text> : null}
-          </TouchableOpacity>
+      }
+    
+      const handleDeleteTransaction = () => {
+        Alert.alert(
+          'Delete Transaction',
+          'Are you sure you want to delete this transaction?',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { 
+              text: 'Delete', 
+              onPress: () => {
+                // You need a function to remove transaction in GroupContext
+                group.transactions = group.transactions.filter(txn => txn.id !== item.id);
+                removeTransaction(groupId, item.id);
+                // Best practice: Create removeTransaction(groupId, transactionId) in context!
+              },
+              style: 'destructive'
+            }
+          ]
         );
       };
+    
+      return (
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('TransactionDetail', { transaction: item, group })}
+          style={styles.txCard}
+        >
+          <View style={styles.txHeader}>
+            <View>
+              <Text style={styles.txTitle}>{item.description}</Text>
+              <Text style={{ fontSize: 12, color: 'gray' }}>Paid by: {payers}</Text>
+              {note ? <Text style={{ fontSize: 12, color: 'gray' }}>{note}</Text> : null}
+            </View>
+            <Pressable onPress={handleDeleteTransaction}>
+              <Ionicons name="trash-outline" size={20} color="red" />
+            </Pressable>
+          </View>
+        </TouchableOpacity>
+      );
+    };
+    
+    
 
     const addContactAsMember = (contact) => {
         const person = new Person({
@@ -128,6 +181,26 @@ export default function GroupDetail({ route, navigation }) {
         })();
     }, []);
 
+    useEffect(() => {
+      if (route.params?.transactionToEdit) {
+        // console.log("transactionToEdit:", route.params?.transactionToEdit);
+        // const tx = route.params.transactionToEdit;
+        // setDesc(tx.description);
+        // setAmount(tx.amount.toString());
+        // setPaidBy(tx.paidBy[0]?.id || ''); 
+        // setIsEqualSplit(tx.splitType === 'equal');
+        // setInvolvedMembers(tx.splits.map(s => s.personId));
+        // const shares = {};
+        // tx.splits.forEach(s => {
+        //   shares[s.personId] = s.amount;
+        // });
+        // setMemberShares(shares);
+        setEditing(true);
+        setShowAddTxModal(true);
+      }
+    }, [route.params?.transactionToEdit]);
+    
+
     useLayoutEffect(()=>{
       navigation.setOptions({
         headerShown: !showAddTxModal
@@ -167,6 +240,9 @@ export default function GroupDetail({ route, navigation }) {
             dismiss={() => setShowAddTxModal(false)}
             group={group}
             addTransaction={addTransaction}
+            groupId={groupId}
+            isEditing={isEditing}
+            transaction={route.params?.transactionToEdit}
         />
         <AddMemberModal 
             isAddMemberModalVisible={isAddMemberModalVisible}

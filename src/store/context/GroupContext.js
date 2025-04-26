@@ -44,11 +44,16 @@ function groupReducer(state, action) {
     case 'ADD_TRANSACTION':
       return {
         ...state,
-        groups: state.groups.map(group =>
-          group.id === action.payload.groupId
-            ? { ...group, transactions: [...(group.transactions || []), action.payload.transaction] }
-            : group
-        )
+        groups: state.groups.map(group => {
+          if(group.id === action.payload.groupId){
+            const updatedTransactions = action.payload.isEditing
+            ?  group.transactions.map(tx => tx.id === action.payload.transaction.id ? action.payload.transaction : tx)
+            : [...group?.transactions || [], action.payload.transaction];
+            
+            return { ...group, transactions: updatedTransactions };
+          }
+            return group;
+        })
       };
 
     case 'REMOVE_TRANSACTION':
@@ -92,8 +97,8 @@ export const GroupProvider = ({ children }) => {
   };
 
 // Transaction
-  const addTransaction = (groupId, transaction) => {
-    dispatch({ type: 'ADD_TRANSACTION', payload: { groupId, transaction } });
+  const addTransaction = (groupId, transaction, isEditing = false) => {
+    dispatch({ type: 'ADD_TRANSACTION', payload: { groupId, transaction, isEditing } });
   };
   
   const removeTransaction = (groupId, transactionId) => {

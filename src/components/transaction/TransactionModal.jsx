@@ -25,7 +25,10 @@ export default function TransactionModal({
   visible,
   dismiss,
   group,
-  addTransaction
+  addTransaction,
+  groupId,
+  isEditing,
+  transaction,
 }) {
 
   const [isPaidByModalVisible, setPaidByModalVisible] = useState(false);
@@ -55,7 +58,7 @@ export default function TransactionModal({
 
 
   useEffect(() => {
-    if (visible) {
+    if (visible && !isEditing) {
       // Reset state when modal opens
       setDesc('');
       setAmount('');
@@ -71,14 +74,44 @@ export default function TransactionModal({
         descInputRef.current?.focus();
       }, 100); // slight delay to ensure input is mounted
 
+    } else if (transaction) {
+      console.log("transactionToEdit:", transaction);
+      const tx = transaction;
+      setDesc(tx.description);
+      setAmount(tx.amount.toString());
+      setPaidByContributions(tx.paidBy);
+      setIsEqualSplit(tx.splitType === 'equal');
+      setInvolvedMembers(tx.splits.map(s => s.personId));
+      const shares = {};
+      tx.splits.forEach(s => {
+        shares[s.personId] = s.amount;
+      });
+      setMemberShares(shares);
     }
-  }, [visible]);
+  }, [visible, transaction]);
 
   const handleCreateTransaction = () => {
     const amt = parseFloat(amount);
-    if (!desc || isNaN(amt) || amt <= 0) return;
+    if (!desc) {
+      Alert.alert("Missing Description", "Please enter a description.");
+      return;
+    }
+    if (isNaN(amt) || amt <= 0) {
+      Alert.alert("Invalid Amount", "Please enter a valid positive amount.");
+      return;
+    }
 
-    const totalPaid = paidByContributions.reduce((sum, entry) => sum + (parseFloat(entry.amount) || 0), 0);
+    let updatedPaidBy = [...paidByContributions];
+
+    if (!Array.isArray(updatedPaidBy) || updatedPaidBy.length === 0) {
+      updatedPaidBy = [{ id: group.members[0].id, amount: parseFloat(amount) }];
+    } else if (updatedPaidBy.length === 1 && (!updatedPaidBy[0].amount || updatedPaidBy[0].amount === 0)) {
+      updatedPaidBy[0].amount = parseFloat(amount);
+    }
+
+
+    // const totalPaid = paidByContributions.reduce((sum, entry) => sum + (parseFloat(entry.amount) || 0), 0);
+    const totalPaid = updatedPaidBy.reduce((sum, entry) => sum + (parseFloat(entry.amount) || 0), 0);
     if (Math.abs(totalPaid - amt) > 0.01) {
       Alert.alert("Amount mismatch", "Total paid doesn't equal the transaction amount");
       return;
@@ -86,6 +119,11 @@ export default function TransactionModal({
 
     let splits = [];
     if (isEqualSplit) {
+
+      if (involvedMembers.length === 0) {
+        Alert.alert("No members selected", "Please select at least one member to split the amount.");
+        return;
+      }      
       const share = +(amt / involvedMembers.length).toFixed(2);
       splits = involvedMembers.map(id => ({ personId: id, amount: share }));
     } else {
@@ -101,16 +139,16 @@ export default function TransactionModal({
     }
 
     const tx = new Transaction({
-      id: uuid.v4(),
+      id: isEditing && transaction?.id ? transaction.id : uuid.v4(),
       description: desc,
       amount: amt,
-      // paidBy,
-      paidBy: paidByContributions,
-      splits
+      paidBy: updatedPaidBy,
+      splits,
+      groupId: groupId
     });
 
     console.log("transaction:", tx);
-    addTransaction(group.id, tx);
+    addTransaction(group.id, tx, isEditing);
     dismiss();
   };
   
