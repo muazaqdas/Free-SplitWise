@@ -9,6 +9,10 @@ import CustomModal from '../../components/global/CustomModal';
 import AddMemberModal from '../../components/group/AddMemberModal';
 import Transaction from '../../models/Transaction';
 import TransactionModal from '../../components/transaction/TransactionModal';
+import NoTransactions from '../../components/transaction/NoTransaction';
+import CustomButton from '../../components/global/CustomButton';
+import CustomHeader from '../../components/group/CustomHeader';
+import GroupMembersModal from '../../components/group/GroupMembersModal';
 
 const {width, height} = Dimensions.get('screen')
 
@@ -32,6 +36,9 @@ export default function GroupDetail({ route, navigation }) {
     const [memberShares, setMemberShares] = useState({});
     const [showMembers, setShowMembers] = useState(true);
     const [isEditing, setEditing] = useState(false);
+
+    const [showMembersModal, setShowMembersModal] = useState(false);
+
 
 
     if (!group) return <Text>Group not found</Text>;
@@ -149,10 +156,6 @@ export default function GroupDetail({ route, navigation }) {
         );
     };
 
-    // const filteredContacts = contacts.length>0 ? contacts.filter((contact) =>
-    //     contact.name?.toLowerCase()?.includes(search?.toLowerCase())
-    // ) : [];
-
     const filteredContacts = contacts.length > 0
     ? contacts.filter((contact) => {
         const isAlreadyAdded = group?.members.some(m => m.id === contact.id);
@@ -183,18 +186,6 @@ export default function GroupDetail({ route, navigation }) {
 
     useEffect(() => {
       if (route.params?.transactionToEdit) {
-        // console.log("transactionToEdit:", route.params?.transactionToEdit);
-        // const tx = route.params.transactionToEdit;
-        // setDesc(tx.description);
-        // setAmount(tx.amount.toString());
-        // setPaidBy(tx.paidBy[0]?.id || ''); 
-        // setIsEqualSplit(tx.splitType === 'equal');
-        // setInvolvedMembers(tx.splits.map(s => s.personId));
-        // const shares = {};
-        // tx.splits.forEach(s => {
-        //   shares[s.personId] = s.amount;
-        // });
-        // setMemberShares(shares);
         setEditing(true);
         setShowAddTxModal(true);
       }
@@ -209,9 +200,14 @@ export default function GroupDetail({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+        <CustomHeader 
+          onBackPress={() => navigation.goBack()} 
+          title={group.name}
+          onAddMemberPress={() => setAddMemberModalVisible(true)}
+        />
         <Text style={styles.title}>{group.name}</Text>
 
-        <Text style={styles.subtitle}>Members:</Text>
+        {/* <Text style={styles.subtitle}>Members:</Text>
         <Button title={showMembers ? 'Hide Members' : 'Show Members'} onPress={() => setShowMembers(!showMembers)} />
         {showMembers && (
             <FlatList
@@ -225,23 +221,31 @@ export default function GroupDetail({ route, navigation }) {
                 )}
                 ListEmptyComponent={<Text style={styles.empty}>No members added.</Text>}
             />
-        )}
-        <Pressable onPress={()=>setAddMemberModalVisible(true)}>
-            <Text> Add Member Modal</Text>
-        </Pressable>
+        )} */}
         <FlatList
-            data={group.transactions}
-            keyExtractor={(item)=> item.id}
-            renderItem={renderTransactionItem}
+          data={group.transactions}
+          keyExtractor={(item)=> item.id}
+          renderItem={renderTransactionItem}
+          ListEmptyComponent={<NoTransactions />}
         />
+        <CustomButton
+          buttonText='View Members'
+          onPress={() => setShowMembersModal(true)} 
+        />
+
         <Button title="Add New Transaction" onPress={() => setShowAddTxModal(true)} />
         <TransactionModal 
             visible={showAddTxModal}
-            dismiss={() => setShowAddTxModal(false)}
+            dismiss={() => {
+              setShowAddTxModal(false);
+              setEditing(false);
+              navigation.setParams({ transactionToEdit: null }); // <-- clear on dismiss too
+            }}
             group={group}
             addTransaction={addTransaction}
             groupId={groupId}
             isEditing={isEditing}
+            setEditing={setEditing}
             transaction={route.params?.transactionToEdit}
         />
         <AddMemberModal 
@@ -253,6 +257,11 @@ export default function GroupDetail({ route, navigation }) {
             handleAddMember={handleAddMember}
             newMemberName={newMemberName}
             setNewMemberName={setNewMemberName}
+        />
+        <GroupMembersModal
+          visible={showMembersModal}
+          dismiss={()=> setShowMembersModal(false)}
+          members={group.members}
         />
     </View>
   );

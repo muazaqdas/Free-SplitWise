@@ -14,6 +14,7 @@ import DateTimeModal from './DateTimeModal';
 import NoteModal from './NoteModal';
 import RenderIfElse from '../global/RenderIfElse';
 import { COLOR } from '../../theme';
+import { CONSTANT } from '../../utils/constants';
 const {width, height} = Dimensions.get('screen');
 const PADDING_HORIZONTAL = 12;
 const MAIN_CONTENT_CONTAINER_WIDTH = width - PADDING_HORIZONTAL*2;
@@ -28,6 +29,7 @@ export default function TransactionModal({
   addTransaction,
   groupId,
   isEditing,
+  setEditing,
   transaction,
 }) {
 
@@ -44,7 +46,7 @@ export default function TransactionModal({
   const [amount, setAmount] = useState('');
   // const [paidBy, setPaidBy] = useState(group?.members[0]?.id || '');
   const [paidByContributions, setPaidByContributions] = useState([]);
-  const [isEqualSplit, setIsEqualSplit] = useState(true);
+  const [splitType, setSplitType] = useState(CONSTANT.SPLIT_TYPE.EQUAL);
   const [involvedMembers, setInvolvedMembers] = useState(group.members.map(m => m.id));
   const [memberShares, setMemberShares] = useState({});
 
@@ -55,40 +57,44 @@ export default function TransactionModal({
 
 
   const descInputRef = useRef(null);
-
-
-  useEffect(() => {
-    if (visible && !isEditing) {
-      // Reset state when modal opens
-      setDesc('');
-      setAmount('');
-      // setPaidBy(group?.members[0]?.id || '');
-      setPaidByContributions([{ id: group?.members[0]?.id || '', amount: 0 }]);
-      setIsEqualSplit(true);
-      setInvolvedMembers(group.members.map(m => m.id));
-      setMemberShares({});
-      setSelectedDateTime(new Date());
-      setNote('');
-
-      setTimeout(() => {
-        descInputRef.current?.focus();
-      }, 100); // slight delay to ensure input is mounted
-
-    } else if (transaction) {
-      console.log("transactionToEdit:", transaction);
-      const tx = transaction;
-      setDesc(tx.description);
-      setAmount(tx.amount.toString());
-      setPaidByContributions(tx.paidBy);
-      setIsEqualSplit(tx.splitType === 'equal');
-      setInvolvedMembers(tx.splits.map(s => s.personId));
-      const shares = {};
-      tx.splits.forEach(s => {
-        shares[s.personId] = s.amount;
-      });
-      setMemberShares(shares);
+  
+  const handleAmountChange = (newAmount) => {
+    console.log("newAmount", newAmount);
+    setAmount(newAmount);
+  
+    if (isEditing) {
+      const amt = parseFloat(newAmount);
+      if (!isNaN(amt)) {
+        if (paidByContributions.length === 1) {
+          setPaidByContributions(prev => prev.map(p => ({ ...p, amount: amt })));
+          console.log("setPaidByContributions:", paidByContributions);
+        } else if (paidByContributions.length > 1) {
+          setPaidByContributions([]);
+          // Alert.alert(
+          //   "Paid By needs update",
+          //   "Because you changed the amount, please update who paid how much.",
+          //   [
+          //     { text: "OK", onPress: () => setPaidByContributions([]) }
+          //   ]
+          // );
+        }
+  
+        if (splitType == CONSTANT.SPLIT_TYPE.EQUAL) {
+          if (involvedMembers.length > 0) {
+            const share = +(amt / involvedMembers.length).toFixed(2);
+            const updatedShares = {};
+            involvedMembers.forEach(id => {
+              updatedShares[id] = share;
+            });
+            setMemberShares(updatedShares);
+          }
+        } else {
+          setMemberShares({})
+        }
+      }
     }
-  }, [visible, transaction]);
+  };
+  
 
   const handleCreateTransaction = () => {
     const amt = parseFloat(amount);
@@ -118,7 +124,7 @@ export default function TransactionModal({
     }
 
     let splits = [];
-    if (isEqualSplit) {
+    if (splitType == CONSTANT.SPLIT_TYPE.EQUAL) {
 
       if (involvedMembers.length === 0) {
         Alert.alert("No members selected", "Please select at least one member to split the amount.");
@@ -144,13 +150,49 @@ export default function TransactionModal({
       amount: amt,
       paidBy: updatedPaidBy,
       splits,
+      splitType: splitType,
       groupId: groupId
     });
 
     console.log("transaction:", tx);
     addTransaction(group.id, tx, isEditing);
+    setEditing(false);
     dismiss();
   };
+
+  useEffect(() => {
+    if (visible && !isEditing) {
+      // Reset state when modal opens
+      setDesc('');
+      setAmount('');
+      // setPaidBy(group?.members[0]?.id || '');
+      setPaidByContributions([{ id: group?.members[0]?.id || '', amount: 0 }]);
+      setSplitType(CONSTANT.SPLIT_TYPE.EQUAL);
+      setInvolvedMembers(group.members.map(m => m.id));
+      setMemberShares({});
+      setSelectedDateTime(new Date());
+      setNote('');
+
+      setTimeout(() => {
+        descInputRef.current?.focus();
+      }, 100); // slight delay to ensure input is mounted
+
+    } else if (transaction) {
+      console.log("transactionToEdit:", transaction);
+      const tx = transaction;
+      setDesc(tx.description);
+      setAmount(tx.amount.toString());
+      setPaidByContributions(tx.paidBy);
+      console.log("setSplitType:", tx.splitType);
+      setSplitType(tx.splitType);
+      setInvolvedMembers(tx.splits.map(s => s.personId));
+      const shares = {};
+      tx.splits.forEach(s => {
+        shares[s.personId] = s.amount;
+      });
+      setMemberShares(shares);
+    }
+  }, [visible, transaction]);
   
   return (
     <CustomModal
@@ -171,7 +213,7 @@ export default function TransactionModal({
               <Text style={styles.headerTitle}>Add an expense</Text>
               <CustomTextButton 
                 outerContainerStyle={styles.headerRight}
-                buttonText='Save'
+                buttonText={ isEditing ? "Update" :'Save'}
                 onPress={handleCreateTransaction}
               />
             </View>
@@ -199,7 +241,7 @@ export default function TransactionModal({
                     placeholder="Amount" 
                     placeholderTextColor={isFocused.amount && COLOR.primary}
                     value={amount} 
-                    onChangeText={setAmount} 
+                    onChangeText={handleAmountChange}
                     keyboardType="numeric" 
                     style={[styles.input, isFocused.amount && styles.inputFocused]}
                     onFocus={() => setIsFocused((prev)=> ({...prev, amount:true }))}
@@ -234,7 +276,7 @@ export default function TransactionModal({
                 </Pressable>
 
                 <Pressable onPress={() => setSplitModalVisible(true)} style={styles.selectorButton}>
-                  <Text style={styles.selectorButtonText}>Split: {isEqualSplit ? 'Equally' : 'Unequally'}</Text>
+                  <Text style={styles.selectorButtonText}>Split: {splitType == CONSTANT.SPLIT_TYPE.EQUAL ? 'Equally' : 'Unequally'}</Text>
                 </Pressable>
               </View>
             </View>
@@ -267,11 +309,11 @@ export default function TransactionModal({
         visible={isSplitModalVisible}
         dismiss={() => setSplitModalVisible(false)}
         members={group.members}
-        defaultSplitType={isEqualSplit ? 'equal' : 'unequal'}
+        defaultSplitType={splitType}
         defaultInvolved={involvedMembers}
         defaultShares={memberShares}
         onConfirm={({ splitType, involvedMembers, shares }) => {
-          setIsEqualSplit(splitType === 'equal');
+          setSplitType(splitType);
           setInvolvedMembers(involvedMembers);
           setMemberShares(shares);
         }}

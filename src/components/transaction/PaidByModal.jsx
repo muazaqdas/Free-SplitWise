@@ -1,93 +1,6 @@
-// import React from 'react';
-// import { View, Text, FlatList, Pressable, StyleSheet, Dimensions } from 'react-native';
-// import CustomModal from '../global/CustomModal';
-// import Entypo from '@expo/vector-icons/Entypo';
-
-// const {width, height} = Dimensions.get('screen');
-
-// export default function PaidByModal({ visible, dismiss, members, selectedId, onSelect }) {
-//   return (
-//     <CustomModal visible={visible} dismiss={dismiss} modalContentStyle={styles.modalContent}>
-//       <View style={styles.header}>
-//         <Pressable onPress={dismiss}>
-//           <Entypo name="cross" size={24} color="black" />
-//         </Pressable>
-//         <Text style={styles.title}>Select Who Paid</Text>
-//         <View style={{ width: 24 }} />
-//       </View>
-
-//       <FlatList
-//         data={members}
-//         keyExtractor={(item) => item.id}
-//         contentContainerStyle={styles.list}
-//         renderItem={({ item }) => (
-//           <Pressable
-//             style={[
-//               styles.memberItem,
-//               item.id === selectedId && styles.selectedMemberItem,
-//             ]}
-//             onPress={() => {
-//               onSelect(item.id);
-//               dismiss();
-//             }}
-//           >
-//             <Text style={[styles.memberName, item.id === selectedId && styles.selectedMemberName]}>
-//               {item.name}
-//             </Text>
-//           </Pressable>
-//         )}
-//       />
-//     </CustomModal>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   modalContent: {
-//     backgroundColor: '#fff',
-//     borderTopLeftRadius: 16,
-//     borderTopRightRadius: 16,
-//     paddingHorizontal: 16,
-//     paddingTop: 16,
-//     paddingBottom: 24,
-//     width: width,
-//     minHeight: height,
-//   },
-//   header: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'space-between',
-//     marginBottom: 16,
-//   },
-//   title: {
-//     fontSize: 18,
-//     fontWeight: '600',
-//     textAlign: 'center',
-//     flex: 1,
-//   },
-//   list: {
-//     gap: 10,
-//   },
-//   memberItem: {
-//     padding: 12,
-//     borderRadius: 10,
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     marginBottom: 8,
-//   },
-//   selectedMemberItem: {
-//     borderColor: 'green',
-//     backgroundColor: '#e6ffe6',
-//   },
-//   memberName: {
-//     fontSize: 16,
-//     color: '#333',
-//   },
-//   selectedMemberName: {
-//     fontWeight: '600',
-//   },
-// });
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Pressable, TextInput, StyleSheet, Dimensions, Switch } from 'react-native';
+import Constants from 'expo-constants';
 import CustomModal from '../global/CustomModal';
 import Entypo from '@expo/vector-icons/Entypo';
 
@@ -209,6 +122,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     width: width,
     minHeight: height,
+    paddingTop: Constants.statusBarHeight+10,
   },
   header: {
     flexDirection: 'row',

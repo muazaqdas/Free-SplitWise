@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, TextInput, StyleSheet, FlatList, Dimensions } from 'react-native';
+import Constants from 'expo-constants';
 import CustomModal from '../global/CustomModal';
 import Entypo from '@expo/vector-icons/Entypo';
+import { CONSTANT } from '../../utils/constants';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -10,7 +12,7 @@ export default function SplitModal({
   visible,
   dismiss,
   members,
-  defaultSplitType = 'equal',
+  defaultSplitType = CONSTANT.SPLIT_TYPE.EQUAL,
   defaultInvolved = [],
   defaultShares = {},
   onConfirm,
@@ -44,26 +46,26 @@ export default function SplitModal({
   const handleConfirm = () => {
     const totalEntered = Object.values(shares).reduce((a, b) => a + b, 0);
   
-    if (splitType === 'unequal' && totalEntered !== totalAmount) {
+    if (splitType === CONSTANT.SPLIT_TYPE.UNEQUAL && totalEntered !== totalAmount) {
       alert('Total shares must equal the transaction amount.');
       return;
     }
   
-    if (splitType === 'percentage' && totalEntered !== 100) {
+    if (splitType === CONSTANT.SPLIT_TYPE.PERCENTAGE && totalEntered !== 100) {
       alert('Total percentages must equal 100%.');
       return;
     }
   
     // Filter involved members based on valid shares for unequal and percentage
     const finalInvolved =
-      splitType === 'equal'
+      splitType === CONSTANT.SPLIT_TYPE.EQUAL
         ? involved
         : Object.entries(shares)
             .filter(([_, val]) => val > 0)
             .map(([id]) => id);
   
     const filteredShares =
-      splitType === 'equal'
+      splitType === CONSTANT.SPLIT_TYPE.EQUAL
         ? {}
         : Object.fromEntries(
             Object.entries(shares).filter(([_, val]) => val > 0)
@@ -94,26 +96,26 @@ export default function SplitModal({
 
       <View style={styles.toggleRow}>
         <Pressable
-          onPress={() => setSplitType('equal')}
-          style={[styles.toggleBtn, splitType === 'equal' && styles.toggleSelected]}
+          onPress={() => setSplitType(CONSTANT.SPLIT_TYPE.EQUAL)}
+          style={[styles.toggleBtn, splitType === CONSTANT.SPLIT_TYPE.EQUAL && styles.toggleSelected]}
         >
-          <Text style={[styles.toggleText, splitType === 'equal' && styles.toggleSelectedText]}>
+          <Text style={[styles.toggleText, splitType === CONSTANT.SPLIT_TYPE.EQUAL && styles.toggleSelectedText]}>
             Equal
           </Text>
         </Pressable>
         <Pressable
-          onPress={() => setSplitType('unequal')}
-          style={[styles.toggleBtn, splitType === 'unequal' && styles.toggleSelected]}
+          onPress={() => setSplitType(CONSTANT.SPLIT_TYPE.UNEQUAL)}
+          style={[styles.toggleBtn, splitType === CONSTANT.SPLIT_TYPE.UNEQUAL && styles.toggleSelected]}
         >
-          <Text style={[styles.toggleText, splitType === 'unequal' && styles.toggleSelectedText]}>
+          <Text style={[styles.toggleText, splitType === CONSTANT.SPLIT_TYPE.UNEQUAL && styles.toggleSelectedText]}>
             Unequal
           </Text>
         </Pressable>
         <Pressable
-            onPress={() => setSplitType('percentage')}
-            style={[styles.toggleBtn, splitType === 'percentage' && styles.toggleSelected]}
+            onPress={() => setSplitType(CONSTANT.SPLIT_TYPE.PERCENTAGE)}
+            style={[styles.toggleBtn, splitType === CONSTANT.SPLIT_TYPE.PERCENTAGE && styles.toggleSelected]}
             >
-            <Text style={[styles.toggleText, splitType === 'percentage' && styles.toggleSelectedText]}>
+            <Text style={[styles.toggleText, splitType === CONSTANT.SPLIT_TYPE.PERCENTAGE && styles.toggleSelectedText]}>
                 Percentage
             </Text>
         </Pressable>
@@ -138,10 +140,10 @@ export default function SplitModal({
                 {isChecked && <Entypo name="check" size={16} color="white" />}
               </Pressable>
               <Text style={styles.memberName}>{item.name}</Text>
-              {(splitType === 'unequal' || splitType === 'percentage') && isChecked && (
+              {(splitType === CONSTANT.SPLIT_TYPE.UNEQUAL || splitType === CONSTANT.SPLIT_TYPE.PERCENTAGE) && isChecked && (
                 <TextInput
                     style={styles.input}
-                    placeholder={splitType === 'percentage' ? "%" : "₹"}
+                    placeholder={splitType === CONSTANT.SPLIT_TYPE.PERCENTAGE ? "%" : "₹"}
                     keyboardType="numeric"
                     value={shares[item.id]?.toString() || ''}
                     onChangeText={(val) =>
@@ -157,7 +159,7 @@ export default function SplitModal({
         }}
       />
       <View style={{ marginTop: 20 }}>
-        {splitType === 'equal' && (
+        {splitType === CONSTANT.SPLIT_TYPE.EQUAL && (
             <>
             <Text style={{ fontWeight: 'bold' }}>
                 Each will pay ₹{(totalAmount / involved.length).toFixed(2)} out of ₹{totalAmount}
@@ -178,7 +180,7 @@ export default function SplitModal({
             </>
         )}
 
-        {splitType === 'unequal' && (
+        {splitType === CONSTANT.SPLIT_TYPE.UNEQUAL && (
             <>
             <Text style={{ fontWeight: 'bold' }}>
                 Entered ₹{Object.values(shares).reduce((a, b) => a + b, 0)} / ₹{totalAmount}
@@ -189,7 +191,7 @@ export default function SplitModal({
             </>
         )}
 
-        {splitType === 'percentage' && (
+        {splitType === CONSTANT.SPLIT_TYPE.PERCENTAGE && (
             <>
             <Text style={{ fontWeight: 'bold' }}>
                 Entered {Object.values(shares).reduce((a, b) => a + b, 0)}% / 100%
@@ -214,6 +216,7 @@ const styles = StyleSheet.create({
     minHeight: '50%', 
     width: width,
     minHeight: height,
+    paddingTop: Constants.statusBarHeight+10,
   },
   header: {
     flexDirection: 'row',
