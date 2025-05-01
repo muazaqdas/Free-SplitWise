@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
+import CustomTextButton from '../global/CustomTextButton';
 
 export default function AddPersonForm({ onAdd }) {
   const [name, setName] = useState('');
@@ -18,7 +19,8 @@ export default function AddPersonForm({ onAdd }) {
         value={name}
         onChangeText={setName}
       />
-      <Button title="Add" onPress={handleSubmit} />
+      {/* <Button title="Add" onPress={handleSubmit} /> */}
+      <CustomTextButton buttonText='Add' onPress={handleSubmit}/>
     </View>
   );
 }

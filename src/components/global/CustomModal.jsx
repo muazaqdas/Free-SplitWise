@@ -8,8 +8,9 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
+import { COLOR } from '../../theme';
 
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const CustomModal = ({ 
   children, 
@@ -53,7 +54,8 @@ const CustomModal = ({
       >
         <View style={[styles.modalOverlay, modalOverlayStyle && StyleSheet.flatten(modalOverlayStyle)]}>
           <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            // keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20} // You can tweak this
             style={styles.keyboardAvoidingView}
           >
             <TouchableWithoutFeedback>
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '100%',
-    justifyContent: 'flex-end',
+    backgroundColor:COLOR.white,
   },
 });
 

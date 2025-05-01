@@ -4,4 +4,6 @@ export const COLOR = {
     tertiary:"#cee0c5",
     primaryText:"#453741",
     secondaryText:"#d8a054",
+    white:"#fff",
+    black:"#000"
 }

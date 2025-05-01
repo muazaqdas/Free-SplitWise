@@ -11,6 +11,7 @@ import Signup from './src/screens/authenticationScreens/Signup';
 import { GroupProvider } from './src/store/context/GroupContext';
 import CreateGroup from './src/screens/mainScreens/CreateGroup';
 import GroupDetail from './src/screens/mainScreens/GroupDetail';
+import TransactionDetail from './src/screens/mainScreens/TransactionDetail';
 
 
 const Stack = createNativeStackNavigator();
@@ -109,7 +110,8 @@ export default function App() {
                       name="Login"
                       component={Login}
                       options={{
-                        title: 'Login',
+                        title: '',
+                        headerShown:false,
                         // When logging out, a pop animation feels intuitive
                         animationTypeForReplace: state.isSignout ? 'pop' : 'push',
                       }}
@@ -126,6 +128,7 @@ export default function App() {
                   <Stack.Screen name="Home" component={Home} />
                   <Stack.Screen name="CreateGroup" component={CreateGroup} />
                   <Stack.Screen name="GroupDetail" component={GroupDetail} />
+                  <Stack.Screen name="TransactionDetail" component={TransactionDetail} />
                 </Stack.Group>
               )
           }
