@@ -1,12 +1,12 @@
 export const initDatabase = async (db)=>{
     try {
-        // const db = await openDatabaseAsync('expense_tracker.db');
         await db.execAsync(`
             PRAGMA journal_mode = WAL;
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
-                contact_number TEXT UNIQUE
+                phone_number TEXT UNIQUE,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );
 
             CREATE TABLE IF NOT EXISTS groups (

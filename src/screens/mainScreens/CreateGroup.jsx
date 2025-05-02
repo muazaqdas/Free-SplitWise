@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity, StyleSheet, PermissionsAndroid, Platform } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, TouchableOpacity, StyleSheet, PermissionsAndroid, Platform, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import * as Contacts from 'expo-contacts';
 import uuid from 'react-native-uuid';
 import Person from '../../models/Person';
 import Group from '../../models/Group';
 import AddPersonForm from '../../components/group/AddPersonForm';
 import GroupContext from '../../store/context/GroupContext';
+import { useSQLiteContext } from 'expo-sqlite';
+import groupService from '../../services/group.service';
 
 export default function CreateGroup({ navigation }) {
 
   const { addGroup } = useContext(GroupContext);
+  const db = useSQLiteContext();
 
   const [groupName, setGroupName] = useState('');
   const [members, setMembers] = useState([]);
@@ -24,26 +27,25 @@ export default function CreateGroup({ navigation }) {
       id: contact.id,
       name: contact.name,
       phoneNumber: contact.phoneNumbers[0].number,
-      isContact: true
     });
     setMembers(prev => [...prev, person]);
   };
 
-  const addManualPerson = (name) => {
-    if (!name.trim()) return;
+  const addManualPerson = (name, phoneNumber) => {
+    if (!name.trim() && !phoneNumber.trim() ) return;
 
-    const exists = members.some(m => m.name.toLowerCase() === name.trim().toLowerCase() && !m.isContact);
+    const exists = members.some(m => m.name.toLowerCase() === name.trim().toLowerCase() && m.phoneNumber === phoneNumber );
     if (exists) return; // Avoid duplicate manual entries
 
     const person = new Person({
       id: uuid.v4(),
       name,
-      isContact: false
+      phoneNumber,
     });
     setMembers(prev => [...prev, person]);
   };
 
-  const handleCreateGroup = () => {
+  const handleCreateGroup = async () => {
     const group = new Group({
       id: uuid.v4(),
       name: groupName,
@@ -51,9 +53,14 @@ export default function CreateGroup({ navigation }) {
     });
 
     // Save group to state/store/backend here
+    await handleCreateGroupSQL();
     addGroup(group);
     navigation.goBack();
   };
+
+  const handleCreateGroupSQL = async ()=>{
+    groupService.createGroup(db, groupName, members);
+  }
 
 //   const filteredContacts = contacts.length>0 ? contacts.filter((contact) =>
 //     contact.name?.toLowerCase()?.includes(search?.toLowerCase())
@@ -88,45 +95,49 @@ export default function CreateGroup({ navigation }) {
     }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Group Name</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter group name"
-        value={groupName}
-        onChangeText={setGroupName}
-      />
+    <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding2' : 'height'}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView style={styles.container}>
+          <Text style={styles.label}>Group Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter group name"
+            value={groupName}
+            onChangeText={setGroupName}
+          />
 
-      <Text style={styles.label}>Add Members</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Search contacts"
-        value={search}
-        onChangeText={setSearch}
-      />
-      <FlatList
-        data={filteredContacts}
-        keyExtractor={(item) => item.id}
-        style={styles.contactList}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.contactItem} onPress={() => addContactAsMember(item)}>
-            <Text style={styles.contactListItem}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-      />
+          <Text style={styles.label}>Add Members</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Search contacts"
+            value={search}
+            onChangeText={setSearch}
+          />
+          <FlatList
+            data={filteredContacts}
+            keyExtractor={(item) => item.id}
+            style={styles.contactList}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.contactItem} onPress={() => addContactAsMember(item)}>
+                <Text style={styles.contactListItem}>{item.name}</Text>
+              </TouchableOpacity>
+            )}
+          />
 
-      <AddPersonForm onAdd={addManualPerson} />
+          <AddPersonForm onAdd={addManualPerson} />
 
-      <Text style={styles.label}>Added Members</Text>
-      <FlatList
-        data={members}
-        keyExtractor={(item) => item.id.toString()}
-        style={styles.addedMemberList}
-        renderItem={({ item }) => <Text style={styles.member}>{item.name}</Text>}
-      />
+          <Text style={styles.label}>Added Members</Text>
+          <FlatList
+            data={members}
+            keyExtractor={(item) => item.id.toString()}
+            style={styles.addedMemberList}
+            renderItem={({ item }) => <Text style={styles.member}>{item.name}</Text>}
+          />
 
-      <Button title="Create Group" onPress={handleCreateGroup} disabled={!groupName || members.length === 0} />
-    </View>
+          <Button title="Create Group" onPress={handleCreateGroup} disabled={!groupName || members.length === 0} />
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

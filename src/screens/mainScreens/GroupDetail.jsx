@@ -125,7 +125,6 @@ export default function GroupDetail({ route, navigation }) {
             id: contact.id,
             name: contact.name,
             phoneNumber: contact.phoneNumbers[0].number,
-            isContact: true
         });
     
         addMember(groupId, person); // ✅ Properly updates the context
@@ -138,7 +137,6 @@ export default function GroupDetail({ route, navigation }) {
         const newPerson = new Person({
         id: uuid.v4(),
         name: newMemberName.trim(),
-        isContact: false,
         });
 
         addMember(groupId, newPerson);

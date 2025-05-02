@@ -12,7 +12,7 @@ import CreateGroup from './src/screens/mainScreens/CreateGroup';
 import GroupDetail from './src/screens/mainScreens/GroupDetail';
 import TransactionDetail from './src/screens/mainScreens/TransactionDetail';
 import { initDatabase } from './src/database/db';
-import { SQLiteProvider } from 'expo-sqlite';
+import { deleteDatabaseAsync, SQLiteProvider } from 'expo-sqlite';
 
 
 const Stack = createNativeStackNavigator();
@@ -93,6 +93,15 @@ export default function App() {
     }),
     []
   );
+
+  // React.useEffect(()=>{
+  //   const deleteDB = async ()=>{
+  //     const res = await deleteDatabaseAsync('expense_tracker.db');
+  //     console.log("delete useeffect:", res);
+  //   }
+  //   deleteDB();
+
+  // },[])
   
   return (
     <React.Suspense fallback={<SplashScreen/>}>
