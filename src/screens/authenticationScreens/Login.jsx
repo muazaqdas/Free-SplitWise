@@ -21,6 +21,31 @@ const Login = () => {
       const storedEmail = await SecureStore.getItemAsync('userEmail');
       const storedPassword = await SecureStore.getItemAsync('userPassword');
 
+
+      
+
+
+      const save = await fetch("http://localhost:3000/api/auth/login", {
+          method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include",
+          body: JSON.stringify({email: data.email, password:data.password })
+      })
+
+
+
+      const tokendata = await save.json();
+
+      console.log(data.email)
+
+      if(save.ok){
+
+        await SecureStore.setItemAsync("usertoken",tokendata.token)
+
+      }else{
+        Alert.alert('Invalid credentials', 'Please check your email and password');
+
+      }
+
+
       if (data.email === storedEmail && data.password === storedPassword) {
         await signIn(data);
       } else {

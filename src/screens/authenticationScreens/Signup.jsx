@@ -13,15 +13,35 @@ const Signup = () => {
   const { signUp } = useContext(AuthContext);
 
   const onSubmit = async (data) => {
-    try {
-      // Save credentials securely
-      await SecureStore.setItemAsync('userEmail', data.email);
-      await SecureStore.setItemAsync('userPassword', data.password);
+  try {
+    // Save credentials securely on the device
+    await SecureStore.setItemAsync('userEmail', data.email);
+    await SecureStore.setItemAsync('userPassword', data.password);
 
-      // Call signUp to log in the user
-      await signUp(data);
+    // Call backend API to register user
+    const response = await fetch("http://192.168.1.6:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to register");
+    }
+
+    // Call signUp context function (to update app state)
+    await signUp(data);
+
+    Alert.alert("Success", "User registered successfully!");
+
     } catch (err) {
-      Alert.alert('Error', 'Something went wrong during sign up');
+    console.log(err);
+    Alert.alert("Error", err.message || "Something went wrong during sign up");
     }
   };
 
