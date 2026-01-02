@@ -7,10 +7,15 @@ import { useNavigation } from '@react-navigation/native';
 import { useContext } from 'react';
 import AuthContext from '../../store/context/AuthContext';
 
+import UserContext from '../../store/context/UserContext';
+
 const Signup = () => {
+
   const { control, handleSubmit } = useForm();
   const navigation = useNavigation();
   const { signUp } = useContext(AuthContext);
+
+  const user=useContext(UserContext)
 
   const onSubmit = async (data) => {
   try {
@@ -18,21 +23,10 @@ const Signup = () => {
     await SecureStore.setItemAsync('userEmail', data.email);
     await SecureStore.setItemAsync('userPassword', data.password);
 
-    // Call backend API to register user
-    const response = await fetch("http://192.168.1.6:3000/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: data.email,
-        password: data.password,
-      }),
-    });
+    // Call appwrite  API to register user
+    user.register(data.email,data.password)
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || "Failed to register");
-    }
+    console.log(data.email)
 
     // Call signUp context function (to update app state)
     await signUp(data);

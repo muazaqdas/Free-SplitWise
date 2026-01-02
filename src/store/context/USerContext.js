@@ -1,14 +1,12 @@
 import { ID } from "react-native-appwrite";
 import { createContext, useContext, useEffect, useState } from "react";
-import { account } from "../lib/appwrite";
-import { toast } from "../lib/toast";
+import { databases, account } from '../../../lib/appwrite';
+import { toast } from "../../../lib/toast.js";
 
 
 const UserContext = createContext();
 
-export function useUser() {
-  return useContext(UserContext);
-}
+
 
 export function UserProvider({children}) {
   const [user, setUser] = useState(null);
