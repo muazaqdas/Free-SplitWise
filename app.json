@@ -19,19 +19,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.freesplitwise.app",
+      "versionCode": 1,
+      "permissions": ["android.permission.READ_CONTACTS"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      [
-        "expo-sqlite",
-        {
-          "enableFTS": true,
-          "useSQLCipher": true
-        }
-      ]
+      ["expo-sqlite", { "enableFTS": true, "useSQLCipher": true }],
+      ["expo-contacts", { "contactsPermission": "Allow Free-SplitWise to access your contacts." }]
     ]
   }
 }

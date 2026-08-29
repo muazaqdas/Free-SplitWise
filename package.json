@@ -4,9 +4,11 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "test": "jest --watchAll",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@react-native-community/datetimepicker": "8.3.0",
@@ -28,7 +30,17 @@
     "react-native-uuid": "^2.0.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.25.0",
+    "babel-preset-expo": "~12.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-expo": "~8.0.0",
+    "jest-expo": "~53.0.0"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
+    ]
   },
   "private": true
 }
