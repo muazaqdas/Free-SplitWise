@@ -11,6 +11,7 @@ import type { GroupMemberWithUser } from '../../repositories';
 import { getSettlementsService } from '../../services/settlements.service';
 import type { GroupsStackParamList } from './types';
 import { showAlert } from '../../store/alertStore';
+import { PLACEHOLDERS } from '../../constants/placeholders';
 
 type Props = NativeStackScreenProps<GroupsStackParamList, 'SettleUp'>;
 
@@ -117,14 +118,14 @@ export default function SettleUpScreen({ route, navigation }: Props) {
         <TextInput
           value={amount}
           onChangeText={setAmount}
-          placeholder="Amount"
+          placeholder={PLACEHOLDERS.amount}
           keyboardType="decimal-pad"
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
         <TextInput
           value={note}
           onChangeText={setNote}
-          placeholder="Note (optional)"
+          placeholder={PLACEHOLDERS.note}
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
 

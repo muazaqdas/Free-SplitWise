@@ -8,6 +8,7 @@ import CustomButton from '../components/global/CustomButton';
 import CustomModal from '../components/global/CustomModal';
 import { PAGE_ICONS } from '../components/global/navIcons';
 import { getCurrentUserService } from '../services/currentUser.service';
+import { PLACEHOLDERS } from '../constants/placeholders';
 import type { User } from '../db/types';
 import type { RootStackParamList } from './types';
 
@@ -82,13 +83,13 @@ export default function HomeScreen({ navigation }: Props) {
         <TextInput
           value={nameDraft}
           onChangeText={setNameDraft}
-          placeholder="Your name"
+          placeholder={PLACEHOLDERS.profileName}
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
         <TextInput
           value={monthlyIncomeDraft}
           onChangeText={setMonthlyIncomeDraft}
-          placeholder="Monthly income (optional, used for income-based splits)"
+          placeholder={PLACEHOLDERS.monthlyIncome}
           keyboardType="numeric"
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />

@@ -11,6 +11,7 @@ import { getPersonalTransactionsService } from '../../services/personalTransacti
 import type { PersonalTransactionType } from '../../db/types';
 import type { PersonalStackParamList } from './types';
 import { showAlert } from '../../store/alertStore';
+import { PLACEHOLDERS } from '../../constants/placeholders';
 
 type Props = NativeStackScreenProps<PersonalStackParamList, 'AddEditTransaction'>;
 
@@ -111,14 +112,14 @@ export default function AddEditTransactionScreen({ route, navigation }: Props) {
       <TextInput
         value={amount}
         onChangeText={setAmount}
-        placeholder="Amount"
+        placeholder={PLACEHOLDERS.amount}
         keyboardType="decimal-pad"
         className="rounded-xl border border-slate-300 px-4 py-3 text-base"
       />
       <TextInput
         value={category}
         onChangeText={setCategory}
-        placeholder="Category (e.g. Food, Rent)"
+        placeholder={PLACEHOLDERS.category}
         className="rounded-xl border border-slate-300 px-4 py-3 text-base"
       />
 
@@ -143,7 +144,7 @@ export default function AddEditTransactionScreen({ route, navigation }: Props) {
       <TextInput
         value={note}
         onChangeText={setNote}
-        placeholder="Note (optional)"
+        placeholder={PLACEHOLDERS.note}
         className="rounded-xl border border-slate-300 px-4 py-3 text-base"
       />
 

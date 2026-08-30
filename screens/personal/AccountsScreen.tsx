@@ -10,6 +10,7 @@ import RenderIf from '../../components/global/RenderIf';
 import { getAccountsRepository } from '../../repositories';
 import type { Account, AccountType } from '../../db/types';
 import type { PersonalStackParamList } from './types';
+import { PLACEHOLDERS } from '../../constants/placeholders';
 
 type Props = NativeStackScreenProps<PersonalStackParamList, 'Accounts'>;
 
@@ -100,7 +101,7 @@ export default function AccountsScreen({ navigation }: Props) {
         <TextInput
           value={name}
           onChangeText={setName}
-          placeholder="Account name"
+          placeholder={PLACEHOLDERS.accountName}
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
         <View className="flex-row gap-2">
@@ -119,7 +120,7 @@ export default function AccountsScreen({ navigation }: Props) {
         <TextInput
           value={initialBalance}
           onChangeText={setInitialBalance}
-          placeholder="Opening balance (optional)"
+          placeholder={PLACEHOLDERS.openingBalance}
           keyboardType="numeric"
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />

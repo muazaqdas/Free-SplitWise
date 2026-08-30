@@ -13,6 +13,7 @@ import { getGroupsService } from '../../services/groups.service';
 import type { Expense, User } from '../../db/types';
 import type { GroupsStackParamList } from './types';
 import { showAlert } from '../../store/alertStore';
+import { PLACEHOLDERS } from '../../constants/placeholders';
 
 type Props = NativeStackScreenProps<GroupsStackParamList, 'GroupDetail'>;
 
@@ -203,7 +204,7 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
           <TextInput
             value={newFriendName}
             onChangeText={setNewFriendName}
-            placeholder="New friend's name"
+            placeholder={PLACEHOLDERS.friendName}
             className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
           />
           <CustomButton buttonText="Add" onPress={handleAddFriend} />
@@ -236,7 +237,7 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
           <TextInput
             value={groupNameDraft}
             onChangeText={setGroupNameDraft}
-            placeholder="Group name"
+            placeholder={PLACEHOLDERS.groupName}
             className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
           />
           <CustomButton buttonText="Save" onPress={handleRenameGroup} />
@@ -253,7 +254,7 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
           <TextInput
             value={memberNameDraft}
             onChangeText={setMemberNameDraft}
-            placeholder="Member's name"
+            placeholder={PLACEHOLDERS.memberName}
             className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
           />
           <CustomButton buttonText="Save" onPress={handleRenameMember} />

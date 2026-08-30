@@ -13,6 +13,7 @@ import type { CreatableSplitType } from '../../services/expenses.service';
 import { getSettlementsService } from '../../services/settlements.service';
 import type { GroupsStackParamList } from './types';
 import { showAlert } from '../../store/alertStore';
+import { PLACEHOLDERS } from '../../constants/placeholders';
 
 type Props = NativeStackScreenProps<GroupsStackParamList, 'AddExpense'>;
 
@@ -30,10 +31,10 @@ function todayIso(): string {
 // through calculateWeightedSplit. INCOME has no per-participant input at all:
 // its weight is each user's stored monthlyIncome (CLAUDE.md Module 6).
 function weightLabel(splitType: CreatableSplitType): string {
-  if (splitType === 'EXACT') return 'Amount owed';
-  if (splitType === 'PERCENT') return 'Percent';
-  if (splitType === 'RATION') return 'Ration value';
-  return 'Shares';
+  if (splitType === 'EXACT') return PLACEHOLDERS.weightAmountOwed;
+  if (splitType === 'PERCENT') return PLACEHOLDERS.weightPercent;
+  if (splitType === 'RATION') return PLACEHOLDERS.weightRationValue;
+  return PLACEHOLDERS.weightShares;
 }
 
 export default function AddExpenseScreen({ route, navigation }: Props) {
@@ -246,20 +247,20 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
         <TextInput
           value={description}
           onChangeText={setDescription}
-          placeholder="Description (e.g. Dinner)"
+          placeholder={PLACEHOLDERS.expenseDescription}
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
         <TextInput
           value={amount}
           onChangeText={setAmount}
-          placeholder="Amount"
+          placeholder={PLACEHOLDERS.amount}
           keyboardType="decimal-pad"
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
         <TextInput
           value={category}
           onChangeText={setCategory}
-          placeholder="Category (optional)"
+          placeholder={PLACEHOLDERS.expenseCategoryOptional}
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
 
@@ -317,7 +318,7 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
           <TextInput
             value={rationMetric}
             onChangeText={setRationMetric}
-            placeholder='Ration metric (e.g. "Meals Eaten")'
+            placeholder={PLACEHOLDERS.rationMetric}
             className="rounded-xl border border-slate-300 px-4 py-3 text-base"
           />
         </RenderIf>
@@ -351,7 +352,7 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
                 <TextInput
                   value={incomeInputs[m.userId] ?? ''}
                   onChangeText={(text) => setIncomeInputs((prev) => ({ ...prev, [m.userId]: text }))}
-                  placeholder="Monthly income"
+                  placeholder={PLACEHOLDERS.participantMonthlyIncome}
                   keyboardType="decimal-pad"
                   className="w-28 rounded-xl border border-slate-300 px-3 py-3 text-base"
                 />

@@ -10,6 +10,7 @@ import { getGroupsService } from '../../services/groups.service';
 import type { User } from '../../db/types';
 import type { GroupsStackParamList } from './types';
 import { showAlert } from '../../store/alertStore';
+import { PLACEHOLDERS } from '../../constants/placeholders';
 
 type Props = NativeStackScreenProps<GroupsStackParamList, 'CreateGroup'>;
 
@@ -59,7 +60,7 @@ export default function CreateGroupScreen({ navigation }: Props) {
       <TextInput
         value={groupName}
         onChangeText={setGroupName}
-        placeholder="Group name"
+        placeholder={PLACEHOLDERS.groupName}
         className="rounded-xl border border-slate-300 px-4 py-3 text-base"
       />
 
@@ -69,7 +70,7 @@ export default function CreateGroupScreen({ navigation }: Props) {
         <TextInput
           value={newFriendName}
           onChangeText={setNewFriendName}
-          placeholder="New friend's name"
+          placeholder={PLACEHOLDERS.friendName}
           className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
         <CustomButton buttonText="Add" onPress={handleAddFriend} />

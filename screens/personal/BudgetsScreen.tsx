@@ -9,6 +9,7 @@ import { getBudgetsRepository } from '../../repositories';
 import { getBudgetOverviewService, type BudgetProgress } from '../../services/budgetOverview.service';
 import { usePersonalUiStore } from '../../store/personalUiStore';
 import { showAlert } from '../../store/alertStore';
+import { PLACEHOLDERS } from '../../constants/placeholders';
 
 function shiftMonth(month: string, delta: number): string {
   const [year, monthNum] = month.split('-').map(Number);
@@ -145,13 +146,13 @@ export default function BudgetsScreen() {
         <TextInput
           value={category}
           onChangeText={setCategory}
-          placeholder="Category (e.g. Food, Rent)"
+          placeholder={PLACEHOLDERS.category}
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
         <TextInput
           value={monthlyLimit}
           onChangeText={setMonthlyLimit}
-          placeholder="Monthly limit"
+          placeholder={PLACEHOLDERS.budgetMonthlyLimit}
           keyboardType="decimal-pad"
           className="rounded-xl border border-slate-300 px-4 py-3 text-base"
         />
