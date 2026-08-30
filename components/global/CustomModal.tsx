@@ -48,11 +48,11 @@ export default function CustomModal({
           <KeyboardAvoidingView className="w-full">
             <TouchableWithoutFeedback>
               <Animated.View
-                className={`w-full bg-white shadow-2xl shadow-black/40 ${contentClassName}`}
+                className={`w-full bg-cream shadow-2xl shadow-black/40 ${contentClassName}`}
                 style={{ transform: [{ translateY }], marginBottom: insets.bottom }}
               >
                 <View className="items-center pb-1 pt-2">
-                  <View className="h-1.5 w-12 rounded-full bg-slate-300" />
+                  <View className="h-1.5 w-12 rounded-full bg-sand" />
                 </View>
                 {children}
               </Animated.View>

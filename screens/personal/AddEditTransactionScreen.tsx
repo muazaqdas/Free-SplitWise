@@ -94,17 +94,17 @@ export default function AddEditTransactionScreen({ route, navigation }: Props) {
   if (loading) return null;
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 gap-4 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 gap-4 bg-cream px-4 pt-4">
       <View className="flex-row gap-2">
         {TRANSACTION_TYPES.map((t) => (
           <Pressable
             key={t}
             onPress={() => setType(t)}
             className={`flex-1 rounded-xl border px-3 py-2 ${
-              type === t ? 'border-slate-900 bg-slate-900' : 'border-slate-300 bg-white'
+              type === t ? 'border-forest bg-forest' : 'border-sand bg-cream'
             }`}
           >
-            <Text className={`text-center capitalize ${type === t ? 'text-white' : 'text-slate-900'}`}>{t}</Text>
+            <Text className={`text-center capitalize ${type === t ? 'text-white' : 'text-ink'}`}>{t}</Text>
           </Pressable>
         ))}
       </View>
@@ -114,20 +114,20 @@ export default function AddEditTransactionScreen({ route, navigation }: Props) {
         onChangeText={setAmount}
         placeholder={PLACEHOLDERS.amount}
         keyboardType="decimal-pad"
-        className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+        className="rounded-xl border border-sand px-4 py-3 text-base"
       />
       <TextInput
         value={category}
         onChangeText={setCategory}
         placeholder={PLACEHOLDERS.category}
-        className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+        className="rounded-xl border border-sand px-4 py-3 text-base"
       />
 
       <Pressable
         onPress={() => setShowDatePicker(true)}
-        className="rounded-xl border border-slate-300 px-4 py-3"
+        className="rounded-xl border border-sand px-4 py-3"
       >
-        <Text className="text-base text-slate-900">{date}</Text>
+        <Text className="text-base text-ink">{date}</Text>
       </Pressable>
       <RenderIf condition={showDatePicker}>
         <DateTimePicker
@@ -145,12 +145,12 @@ export default function AddEditTransactionScreen({ route, navigation }: Props) {
         value={note}
         onChangeText={setNote}
         placeholder={PLACEHOLDERS.note}
-        className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+        className="rounded-xl border border-sand px-4 py-3 text-base"
       />
 
       <CustomButton buttonText={isEditing ? 'Save Changes' : 'Add Transaction'} onPress={handleSave} />
       <RenderIf condition={isEditing}>
-        <CustomTextButton buttonText="Delete Transaction" onPress={handleDelete} textClassName="text-red-600" />
+        <CustomTextButton buttonText="Delete Transaction" onPress={handleDelete} textClassName="text-coral" />
       </RenderIf>
     </SafeAreaView>
   );

@@ -66,17 +66,17 @@ export default function ActivityScreen({ route }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream px-4 pt-4">
       <RenderIf condition={entries.length === 0}>
-        <Text className="text-slate-500">No activity yet.</Text>
+        <Text className="text-moss">No activity yet.</Text>
       </RenderIf>
       <FlatList
         data={entries}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View className="mb-3 rounded-2xl border border-slate-200 px-4 py-3">
-            <Text className="text-base text-slate-900">{activityLine(item, nameFor)}</Text>
-            <Text className="mt-1 text-sm text-slate-500">{formatTimestamp(item.createdAt)}</Text>
+          <View className="mb-3 rounded-2xl border border-sand px-4 py-3">
+            <Text className="text-base text-ink">{activityLine(item, nameFor)}</Text>
+            <Text className="mt-1 text-sm text-moss">{formatTimestamp(item.createdAt)}</Text>
           </View>
         )}
       />

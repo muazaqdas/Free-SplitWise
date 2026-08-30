@@ -27,9 +27,9 @@ export default function AlertModal() {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={hide} statusBarTranslucent>
       <View className="flex-1 items-center justify-center bg-black/50 px-8">
-        <View className="w-full max-w-sm rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-2xl shadow-black/40">
-          <Text className="text-lg font-semibold text-slate-900">{title}</Text>
-          {message ? <Text className="mt-2 text-base text-slate-600">{message}</Text> : null}
+        <View className="w-full max-w-sm rounded-2xl border border-sand bg-cream px-5 py-4 shadow-2xl shadow-black/40">
+          <Text className="text-lg font-semibold text-ink">{title}</Text>
+          {message ? <Text className="mt-2 text-base text-moss">{message}</Text> : null}
           <View className="mt-5 flex-row justify-end gap-2">
             {buttons.map((button, index) => (
               <Pressable
@@ -40,10 +40,10 @@ export default function AlertModal() {
                 <Text
                   className={`text-base font-semibold ${
                     button.style === 'destructive'
-                      ? 'text-red-600'
+                      ? 'text-coral'
                       : button.style === 'cancel'
-                        ? 'text-slate-500'
-                        : 'text-slate-900'
+                        ? 'text-moss'
+                        : 'text-ink'
                   }`}
                 >
                   {button.text}

@@ -56,28 +56,28 @@ export default function CreateGroupScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 gap-4 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 gap-4 bg-cream px-4 pt-4">
       <TextInput
         value={groupName}
         onChangeText={setGroupName}
         placeholder={PLACEHOLDERS.groupName}
-        className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+        className="rounded-xl border border-sand px-4 py-3 text-base"
       />
 
-      <Text className="text-base font-semibold text-slate-900">Add Members</Text>
+      <Text className="text-base font-semibold text-ink">Add Members</Text>
 
       <View className="flex-row gap-2">
         <TextInput
           value={newFriendName}
           onChangeText={setNewFriendName}
           placeholder={PLACEHOLDERS.friendName}
-          className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="flex-1 rounded-xl border border-sand px-4 py-3 text-base"
         />
         <CustomButton buttonText="Add" onPress={handleAddFriend} />
       </View>
 
       <RenderIf condition={users.length === 0}>
-        <Text className="text-slate-500">No friends yet. Add one above.</Text>
+        <Text className="text-moss">No friends yet. Add one above.</Text>
       </RenderIf>
 
       <FlatList
@@ -89,10 +89,10 @@ export default function CreateGroupScreen({ navigation }: Props) {
             <Pressable
               onPress={() => toggleMember(item.id)}
               className={`mb-2 flex-row items-center justify-between rounded-xl border px-4 py-3 ${
-                selected ? 'border-slate-900 bg-slate-900' : 'border-slate-300 bg-white'
+                selected ? 'border-forest bg-forest' : 'border-sand bg-cream'
               }`}
             >
-              <Text className={selected ? 'text-white' : 'text-slate-900'}>{item.name}</Text>
+              <Text className={selected ? 'text-white' : 'text-ink'}>{item.name}</Text>
             </Pressable>
           );
         }}

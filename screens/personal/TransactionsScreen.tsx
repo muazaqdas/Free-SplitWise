@@ -15,8 +15,8 @@ type Props = NativeStackScreenProps<PersonalStackParamList, 'Transactions'>;
 
 const TYPE_COLOR: Record<PersonalTransaction['type'], string> = {
   income: 'text-green-600',
-  expense: 'text-red-600',
-  transfer: 'text-slate-700',
+  expense: 'text-coral',
+  transfer: 'text-ink/80',
 };
 
 const TYPE_SIGN: Record<PersonalTransaction['type'], string> = {
@@ -58,10 +58,10 @@ export default function TransactionsScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream px-4 pt-4">
       <RenderIf condition={transactions.length === 0}>
         <View className="flex-1 items-center justify-center">
-          <Text className="text-slate-500">No transactions yet for this account.</Text>
+          <Text className="text-moss">No transactions yet for this account.</Text>
         </View>
       </RenderIf>
 
@@ -72,11 +72,11 @@ export default function TransactionsScreen({ route, navigation }: Props) {
           <Pressable
             onPress={() => navigation.navigate('AddEditTransaction', { accountId, transactionId: item.id })}
             onLongPress={() => confirmDelete(item)}
-            className="mb-3 flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 active:opacity-70"
+            className="mb-3 flex-row items-center justify-between rounded-2xl border border-sand px-4 py-3 active:opacity-70"
           >
             <View className="flex-1 pr-3">
-              <Text className="text-base font-semibold text-slate-900">{item.category}</Text>
-              <Text className="text-sm text-slate-500">
+              <Text className="text-base font-semibold text-ink">{item.category}</Text>
+              <Text className="text-sm text-moss">
                 {item.date}
                 {item.note ? ` · ${item.note}` : ''}
               </Text>

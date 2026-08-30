@@ -10,15 +10,15 @@
     "splash": {
       "image": "./assets/dino-splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FBF4E3"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/dino-logo.png",
+        "backgroundColor": "#FBF4E3"
       },
       "package": "com.freesplitwise.app",
       "versionCode": 1,

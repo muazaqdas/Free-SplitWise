@@ -12,7 +12,7 @@ interface HeaderHomeButtonProps {
 export default function HeaderHomeButton({ onPress }: HeaderHomeButtonProps) {
   return (
     <Pressable onPress={onPress} className="items-center justify-center rounded-full px-2 py-2.5 active:scale-95">
-      <Ionicons name={PAGE_ICONS.Home} size={22} color="#0f172a" />
+      <Ionicons name={PAGE_ICONS.Home} size={22} color="#2B2416" />
     </Pressable>
   );
 }

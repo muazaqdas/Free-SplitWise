@@ -64,7 +64,7 @@ export default function BalancesScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream px-4 pt-4">
       <FlatList
         data={history}
         keyExtractor={(item) => item.id}
@@ -72,18 +72,18 @@ export default function BalancesScreen({ route, navigation }: Props) {
           <View className="mb-4 gap-3">
             <Pressable
               onPress={() => setSimplified((prev) => !prev)}
-              className="flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3"
+              className="flex-row items-center justify-between rounded-2xl border border-sand px-4 py-3"
             >
-              <Text className="text-base font-semibold text-slate-900">
+              <Text className="text-base font-semibold text-ink">
                 {simplified ? 'Simplified debts' : 'Raw debts'}
               </Text>
-              <Text className="text-sm text-blue-600">
+              <Text className="text-sm text-plum">
                 {simplified ? 'Show raw' : 'Simplify debts'}
               </Text>
             </Pressable>
 
             <RenderIf condition={visibleDebts.length === 0}>
-              <Text className="text-slate-500">All settled up.</Text>
+              <Text className="text-moss">All settled up.</Text>
             </RenderIf>
 
             {/* Simplified rows are a read-only suggestion, not settleable directly: a
@@ -98,14 +98,14 @@ export default function BalancesScreen({ route, navigation }: Props) {
               simplified ? (
                 <View
                   key={`${item.fromUserId}-${item.toUserId}-${index}`}
-                  className="flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 opacity-80"
+                  className="flex-row items-center justify-between rounded-2xl border border-sand px-4 py-3 opacity-80"
                 >
                   <View>
-                    <Text className="text-base text-slate-900">
+                    <Text className="text-base text-ink">
                       <Text className="font-semibold">{nameFor(item.fromUserId)}</Text> should pay{' '}
                       <Text className="font-semibold">{nameFor(item.toUserId)}</Text>
                     </Text>
-                    <Text className="mt-1 text-lg font-bold text-slate-900">${item.amount.toFixed(2)}</Text>
+                    <Text className="mt-1 text-lg font-bold text-ink">${item.amount.toFixed(2)}</Text>
                   </View>
                 </View>
               ) : (
@@ -119,21 +119,21 @@ export default function BalancesScreen({ route, navigation }: Props) {
                       amount: item.amount,
                     })
                   }
-                  className="flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3"
+                  className="flex-row items-center justify-between rounded-2xl border border-sand px-4 py-3"
                 >
                   <View>
-                    <Text className="text-base text-slate-900">
+                    <Text className="text-base text-ink">
                       <Text className="font-semibold">{nameFor(item.fromUserId)}</Text> owes{' '}
                       <Text className="font-semibold">{nameFor(item.toUserId)}</Text>
                     </Text>
-                    <Text className="mt-1 text-lg font-bold text-slate-900">${item.amount.toFixed(2)}</Text>
+                    <Text className="mt-1 text-lg font-bold text-ink">${item.amount.toFixed(2)}</Text>
                   </View>
-                  <Ionicons name="chevron-forward" size={20} color="#94a3b8" />
+                  <Ionicons name="chevron-forward" size={20} color="#7A6F52" />
                 </Pressable>
               )
             )}
             <RenderIf condition={simplified && visibleDebts.length > 0}>
-              <Text className="text-xs text-slate-400">
+              <Text className="text-xs text-moss">
                 Suggested payments to settle the group in the fewest transactions. Tap "Show
                 raw" and settle from there to record a payment.
               </Text>
@@ -141,27 +141,27 @@ export default function BalancesScreen({ route, navigation }: Props) {
 
             <CustomButton buttonText="Settle Up" onPress={() => navigation.navigate('SettleUp', { groupId })} />
 
-            <Text className="mt-2 text-base font-semibold text-slate-900">Settlement History</Text>
+            <Text className="mt-2 text-base font-semibold text-ink">Settlement History</Text>
             <RenderIf condition={history.length === 0}>
-              <Text className="text-slate-500">No payments recorded yet.</Text>
+              <Text className="text-moss">No payments recorded yet.</Text>
             </RenderIf>
           </View>
         }
         renderItem={({ item }) => (
-          <View className="mb-3 flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3">
+          <View className="mb-3 flex-row items-center justify-between rounded-2xl border border-sand px-4 py-3">
             <View className="flex-1">
-              <Text className="text-base text-slate-900">
+              <Text className="text-base text-ink">
                 <Text className="font-semibold">{nameFor(item.fromUserId)}</Text> paid{' '}
                 <Text className="font-semibold">{nameFor(item.toUserId)}</Text>
               </Text>
-              <Text className="mt-1 text-lg font-bold text-slate-900">${item.amount.toFixed(2)}</Text>
-              <Text className="mt-1 text-sm text-slate-500">
+              <Text className="mt-1 text-lg font-bold text-ink">${item.amount.toFixed(2)}</Text>
+              <Text className="mt-1 text-sm text-moss">
                 {item.date}
                 {item.note ? ` · ${item.note}` : ''}
               </Text>
             </View>
             <Pressable onPress={() => handleDeleteSettlement(item.id)} className="px-2 py-1">
-              <Ionicons name="trash-outline" size={20} color="#dc2626" />
+              <Ionicons name="trash-outline" size={20} color="#D9614F" />
             </Pressable>
           </View>
         )}

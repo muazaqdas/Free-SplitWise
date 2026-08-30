@@ -73,9 +73,9 @@ export default function SettleUpScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream">
       <ScrollView className="flex-1 px-4 pt-4" contentContainerClassName="gap-4 pb-4">
-        <Text className="text-base font-semibold text-slate-900">Who paid</Text>
+        <Text className="text-base font-semibold text-ink">Who paid</Text>
         <View className="flex-row flex-wrap gap-2">
           {members.map((m) => {
             const selected = fromUserId === m.userId;
@@ -84,16 +84,16 @@ export default function SettleUpScreen({ route, navigation }: Props) {
                 key={m.id}
                 onPress={() => setFromUserId(m.userId)}
                 className={`rounded-full border px-4 py-2 ${
-                  selected ? 'border-slate-900 bg-slate-900' : 'border-slate-300 bg-white'
+                  selected ? 'border-forest bg-forest' : 'border-sand bg-cream'
                 }`}
               >
-                <Text className={selected ? 'text-white' : 'text-slate-900'}>{m.user.name}</Text>
+                <Text className={selected ? 'text-white' : 'text-ink'}>{m.user.name}</Text>
               </Pressable>
             );
           })}
         </View>
 
-        <Text className="text-base font-semibold text-slate-900">Paid to</Text>
+        <Text className="text-base font-semibold text-ink">Paid to</Text>
         <View className="flex-row flex-wrap gap-2">
           {members.map((m) => {
             const selected = toUserId === m.userId;
@@ -102,17 +102,17 @@ export default function SettleUpScreen({ route, navigation }: Props) {
                 key={m.id}
                 onPress={() => setToUserId(m.userId)}
                 className={`rounded-full border px-4 py-2 ${
-                  selected ? 'border-slate-900 bg-slate-900' : 'border-slate-300 bg-white'
+                  selected ? 'border-forest bg-forest' : 'border-sand bg-cream'
                 }`}
               >
-                <Text className={selected ? 'text-white' : 'text-slate-900'}>{m.user.name}</Text>
+                <Text className={selected ? 'text-white' : 'text-ink'}>{m.user.name}</Text>
               </Pressable>
             );
           })}
         </View>
 
         <RenderIf condition={!!fromUserId && !!toUserId && fromUserId === toUserId}>
-          <Text className="text-sm text-red-600">Choose two different people.</Text>
+          <Text className="text-sm text-coral">Choose two different people.</Text>
         </RenderIf>
 
         <TextInput
@@ -120,17 +120,17 @@ export default function SettleUpScreen({ route, navigation }: Props) {
           onChangeText={setAmount}
           placeholder={PLACEHOLDERS.amount}
           keyboardType="decimal-pad"
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <TextInput
           value={note}
           onChangeText={setNote}
           placeholder={PLACEHOLDERS.note}
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
 
-        <Pressable onPress={() => setShowDatePicker(true)} className="rounded-xl border border-slate-300 px-4 py-3">
-          <Text className="text-base text-slate-900">{date}</Text>
+        <Pressable onPress={() => setShowDatePicker(true)} className="rounded-xl border border-sand px-4 py-3">
+          <Text className="text-base text-ink">{date}</Text>
         </Pressable>
         <RenderIf condition={showDatePicker}>
           <DateTimePicker
@@ -145,7 +145,7 @@ export default function SettleUpScreen({ route, navigation }: Props) {
         </RenderIf>
 
         <RenderIf condition={!!fromUserId && !!toUserId && fromUserId !== toUserId}>
-          <Text className="text-sm text-slate-500">
+          <Text className="text-sm text-moss">
             {nameFor(fromUserId ?? '')} pays {nameFor(toUserId ?? '')}
           </Text>
         </RenderIf>

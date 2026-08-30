@@ -18,7 +18,7 @@ export default function CustomTextButton({
       onPress={onPress}
       className={`items-center justify-center rounded-full px-4 py-2.5 active:scale-95 ${className}`}
     >
-      <Text className={`text-center text-lg font-bold text-slate-900 ${textClassName}`}>{buttonText}</Text>
+      <Text className={`text-center text-lg font-bold text-ink ${textClassName}`}>{buttonText}</Text>
     </Pressable>
   );
 }

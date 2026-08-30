@@ -35,7 +35,7 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
       title: currentGroupName,
       headerRight: () => (
         <Pressable onPress={openEditGroupModal} hitSlop={8}>
-          <Ionicons name="create-outline" size={22} color="#0f172a" />
+          <Ionicons name="create-outline" size={22} color="#2B2416" />
         </Pressable>
       ),
     });
@@ -119,31 +119,31 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream px-4 pt-4">
       <FlatList
         data={expenses}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <View className="mb-4 gap-3">
-            <Text className="text-base font-semibold text-slate-900">Members</Text>
+            <Text className="text-base font-semibold text-ink">Members</Text>
             <RenderIf condition={members.length === 0}>
-              <Text className="text-slate-500">No members yet. Add one to get started.</Text>
+              <Text className="text-moss">No members yet. Add one to get started.</Text>
             </RenderIf>
             {members.map((item) => (
               <View
                 key={item.id}
-                className="flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3"
+                className="flex-row items-center justify-between rounded-2xl border border-sand px-4 py-3"
               >
                 <Pressable
                   onPress={() => openEditMemberModal(item)}
                   className="flex-1 flex-row items-center gap-2"
                   hitSlop={8}
                 >
-                  <Text className="text-base font-semibold text-slate-900">{item.user.name}</Text>
-                  <Ionicons name="create-outline" size={16} color="#94a3b8" />
+                  <Text className="text-base font-semibold text-ink">{item.user.name}</Text>
+                  <Ionicons name="create-outline" size={16} color="#7A6F52" />
                 </Pressable>
                 <Pressable onPress={() => handleRemoveMember(item.id, item.userId)}>
-                  <Text className="text-sm font-medium text-red-600">Remove</Text>
+                  <Text className="text-sm font-medium text-coral">Remove</Text>
                 </Pressable>
               </View>
             ))}
@@ -168,26 +168,26 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
             </View>
             <CustomButton buttonText="Activity" onPress={() => navigation.navigate('Activity', { groupId })} />
 
-            <Text className="mt-2 text-base font-semibold text-slate-900">Expenses</Text>
+            <Text className="mt-2 text-base font-semibold text-ink">Expenses</Text>
             <RenderIf condition={expenses.length === 0}>
-              <Text className="text-slate-500">No expenses yet. Add one to get started.</Text>
+              <Text className="text-moss">No expenses yet. Add one to get started.</Text>
             </RenderIf>
           </View>
         }
         renderItem={({ item }) => (
           <Pressable
             onPress={() => navigation.navigate('AddExpense', { groupId, expenseId: item.id })}
-            className="mb-3 flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3"
+            className="mb-3 flex-row items-center justify-between rounded-2xl border border-sand px-4 py-3"
           >
             <View>
-              <Text className="text-base font-semibold text-slate-900">{item.description}</Text>
-              <Text className="text-sm text-slate-500">
+              <Text className="text-base font-semibold text-ink">{item.description}</Text>
+              <Text className="text-sm text-moss">
                 {item.date} {item.category ? `· ${item.category}` : ''}
               </Text>
             </View>
             <View className="flex-row items-center gap-3">
-              <Text className="text-base font-bold text-slate-900">${item.totalAmount.toFixed(2)}</Text>
-              <Ionicons name="create-outline" size={18} color="#94a3b8" />
+              <Text className="text-base font-bold text-ink">${item.totalAmount.toFixed(2)}</Text>
+              <Ionicons name="create-outline" size={18} color="#7A6F52" />
             </View>
           </Pressable>
         )}
@@ -198,29 +198,29 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
         dismiss={() => setModalVisible(false)}
         contentClassName="rounded-t-3xl px-5 pb-8 pt-5 gap-4"
       >
-        <Text className="text-lg font-bold text-slate-900">Add Member</Text>
+        <Text className="text-lg font-bold text-ink">Add Member</Text>
 
         <View className="flex-row gap-2">
           <TextInput
             value={newFriendName}
             onChangeText={setNewFriendName}
             placeholder={PLACEHOLDERS.friendName}
-            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
+            className="flex-1 rounded-xl border border-sand px-4 py-3 text-base"
           />
           <CustomButton buttonText="Add" onPress={handleAddFriend} />
         </View>
 
         <RenderIf condition={availableUsers.length > 0}>
-          <Text className="text-sm font-semibold text-slate-500">Existing friends</Text>
+          <Text className="text-sm font-semibold text-moss">Existing friends</Text>
           <FlatList
             data={availableUsers}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => handleAddExisting(item.id)}
-                className="mb-2 rounded-xl border border-slate-300 px-4 py-3"
+                className="mb-2 rounded-xl border border-sand px-4 py-3"
               >
-                <Text className="text-slate-900">{item.name}</Text>
+                <Text className="text-ink">{item.name}</Text>
               </Pressable>
             )}
           />
@@ -232,13 +232,13 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
         dismiss={() => setEditGroupModalVisible(false)}
         contentClassName="rounded-t-3xl px-5 pb-8 pt-5 gap-4"
       >
-        <Text className="text-lg font-bold text-slate-900">Rename Group</Text>
+        <Text className="text-lg font-bold text-ink">Rename Group</Text>
         <View className="flex-row gap-2">
           <TextInput
             value={groupNameDraft}
             onChangeText={setGroupNameDraft}
             placeholder={PLACEHOLDERS.groupName}
-            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
+            className="flex-1 rounded-xl border border-sand px-4 py-3 text-base"
           />
           <CustomButton buttonText="Save" onPress={handleRenameGroup} />
         </View>
@@ -249,13 +249,13 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
         dismiss={() => setEditingMember(null)}
         contentClassName="rounded-t-3xl px-5 pb-8 pt-5 gap-4"
       >
-        <Text className="text-lg font-bold text-slate-900">Rename Member</Text>
+        <Text className="text-lg font-bold text-ink">Rename Member</Text>
         <View className="flex-row gap-2">
           <TextInput
             value={memberNameDraft}
             onChangeText={setMemberNameDraft}
             placeholder={PLACEHOLDERS.memberName}
-            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
+            className="flex-1 rounded-xl border border-sand px-4 py-3 text-base"
           />
           <CustomButton buttonText="Save" onPress={handleRenameMember} />
         </View>

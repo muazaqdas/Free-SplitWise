@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Image, Pressable, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
@@ -26,10 +26,11 @@ export default function GroupsListScreen({ navigation }: Props) {
   );
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream px-4 pt-4">
       <RenderIf condition={groups.length === 0}>
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-slate-500">No groups yet. Create one to get started.</Text>
+        <View className="flex-1 items-center justify-center gap-3">
+          <Image source={require('../../assets/dino-2.png')} resizeMode="contain" className="h-32 w-32" />
+          <Text className="text-moss">No groups yet. Create one to get started.</Text>
         </View>
       </RenderIf>
 
@@ -39,9 +40,9 @@ export default function GroupsListScreen({ navigation }: Props) {
         renderItem={({ item }) => (
           <Pressable
             onPress={() => navigation.navigate('GroupDetail', { groupId: item.id, groupName: item.name })}
-            className="mb-3 flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 active:opacity-70"
+            className="mb-3 flex-row items-center justify-between rounded-2xl border border-sand bg-parchment/40 px-4 py-3 active:opacity-70"
           >
-            <Text className="text-base font-semibold text-slate-900">{item.name}</Text>
+            <Text className="text-base font-semibold text-ink">{item.name}</Text>
           </Pressable>
         )}
       />

@@ -2,7 +2,7 @@ import './global.css';
 import * as React from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer, type Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { initDatabase } from './db';
 import HomeScreen from './screens/HomeScreen';
@@ -12,6 +12,11 @@ import type { RootStackParamList } from './screens/types';
 import AlertModal from './components/global/AlertModal';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const navTheme: Theme = {
+  ...DefaultTheme,
+  colors: { ...DefaultTheme.colors, background: '#FBF4E3', card: '#FBF4E3', text: '#2B2416', border: '#D9C08C' },
+};
 
 type DbState = { status: 'loading' } | { status: 'ready' } | { status: 'error'; message: string };
 
@@ -36,24 +41,24 @@ export default function App() {
 
   if (dbState.status === 'loading') {
     return (
-      <View className="flex-1 items-center justify-center gap-3 bg-white px-6">
-        <ActivityIndicator />
-        <Text className="text-slate-500">Initializing database…</Text>
+      <View className="flex-1 items-center justify-center gap-3 bg-cream px-6">
+        <ActivityIndicator color="#4B7A5B" />
+        <Text className="text-moss">Hatching your data…</Text>
       </View>
     );
   }
 
   if (dbState.status === 'error') {
     return (
-      <View className="flex-1 items-center justify-center gap-3 bg-white px-6">
-        <Text className="text-center text-red-600">Failed to initialize database: {dbState.message}</Text>
+      <View className="flex-1 items-center justify-center gap-3 bg-cream px-6">
+        <Text className="text-center text-coral">Failed to initialize database: {dbState.message}</Text>
       </View>
     );
   }
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer theme={navTheme}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Personal" component={PersonalNavigator} />

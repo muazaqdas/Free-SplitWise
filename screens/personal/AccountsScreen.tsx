@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { FlatList, Pressable, Text, TextInput, View } from 'react-native';
+import { FlatList, Image, Pressable, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
@@ -56,15 +56,16 @@ export default function AccountsScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream px-4 pt-4">
       <View className="mb-4 flex-row justify-between">
         <CustomTextButton buttonText="Category Breakdown" onPress={() => navigation.navigate('CategoryBreakdown')} />
         <CustomTextButton buttonText="Monthly Budgets" onPress={() => navigation.navigate('Budgets')} />
       </View>
 
       <RenderIf condition={accounts.length === 0}>
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-slate-500">No accounts yet. Add one to get started.</Text>
+        <View className="flex-1 items-center justify-center gap-3">
+          <Image source={require('../../assets/dino-2.png')} resizeMode="contain" className="h-32 w-32" />
+          <Text className="text-moss">No accounts yet. Add one to get started.</Text>
         </View>
       </RenderIf>
 
@@ -74,13 +75,13 @@ export default function AccountsScreen({ navigation }: Props) {
         renderItem={({ item }) => (
           <Pressable
             onPress={() => navigation.navigate('Transactions', { accountId: item.id, accountName: item.name })}
-            className="mb-3 flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 active:opacity-70"
+            className="mb-3 flex-row items-center justify-between rounded-2xl border border-sand bg-parchment/40 px-4 py-3 active:opacity-70"
           >
             <View>
-              <Text className="text-base font-semibold text-slate-900">{item.name}</Text>
-              <Text className="text-sm capitalize text-slate-500">{item.type}</Text>
+              <Text className="text-base font-semibold text-ink">{item.name}</Text>
+              <Text className="text-sm capitalize text-moss">{item.type}</Text>
             </View>
-            <Text className={`text-lg font-semibold ${item.balance < 0 ? 'text-red-600' : 'text-slate-900'}`}>
+            <Text className={`text-lg font-semibold ${item.balance < 0 ? 'text-coral' : 'text-ink'}`}>
               {formatBalance(item.balance)}
             </Text>
           </Pressable>
@@ -97,12 +98,12 @@ export default function AccountsScreen({ navigation }: Props) {
         }}
         contentClassName="rounded-t-3xl px-5 pb-8 pt-5 gap-4"
       >
-        <Text className="text-lg font-bold text-slate-900">New Account</Text>
+        <Text className="text-lg font-bold text-ink">New Account</Text>
         <TextInput
           value={name}
           onChangeText={setName}
           placeholder={PLACEHOLDERS.accountName}
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <View className="flex-row gap-2">
           {ACCOUNT_TYPES.map((t) => (
@@ -110,10 +111,10 @@ export default function AccountsScreen({ navigation }: Props) {
               key={t}
               onPress={() => setType(t)}
               className={`flex-1 rounded-xl border px-3 py-2 ${
-                type === t ? 'border-slate-900 bg-slate-900' : 'border-slate-300 bg-white'
+                type === t ? 'border-forest bg-forest' : 'border-sand bg-cream'
               }`}
             >
-              <Text className={`text-center capitalize ${type === t ? 'text-white' : 'text-slate-900'}`}>{t}</Text>
+              <Text className={`text-center capitalize ${type === t ? 'text-white' : 'text-ink'}`}>{t}</Text>
             </Pressable>
           ))}
         </View>
@@ -122,7 +123,7 @@ export default function AccountsScreen({ navigation }: Props) {
           onChangeText={setInitialBalance}
           placeholder={PLACEHOLDERS.openingBalance}
           keyboardType="numeric"
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <CustomButton buttonText="Create Account" onPress={handleCreateAccount} />
       </CustomModal>

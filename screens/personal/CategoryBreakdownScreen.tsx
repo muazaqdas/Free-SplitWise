@@ -30,22 +30,22 @@ export default function CategoryBreakdownScreen() {
   const total = spend.reduce((sum, s) => sum + s.spent, 0);
 
   return (
-    <View className="flex-1 bg-white px-4 pt-4">
+    <View className="flex-1 bg-cream px-4 pt-4">
       <View className="mb-4 flex-row items-center justify-between">
         <Pressable onPress={() => setSelectedMonth(shiftMonth(selectedMonth, -1))} className="px-3 py-2">
-          <Text className="text-lg text-slate-900">‹</Text>
+          <Text className="text-lg text-ink">‹</Text>
         </Pressable>
-        <Text className="text-lg font-semibold text-slate-900">{selectedMonth}</Text>
+        <Text className="text-lg font-semibold text-ink">{selectedMonth}</Text>
         <Pressable onPress={() => setSelectedMonth(shiftMonth(selectedMonth, 1))} className="px-3 py-2">
-          <Text className="text-lg text-slate-900">›</Text>
+          <Text className="text-lg text-ink">›</Text>
         </Pressable>
       </View>
 
-      <Text className="mb-4 text-center text-2xl font-bold text-slate-900">Total: {total.toFixed(2)}</Text>
+      <Text className="mb-4 text-center text-2xl font-bold text-ink">Total: {total.toFixed(2)}</Text>
 
       <RenderIf condition={spend.length === 0}>
         <View className="flex-1 items-center justify-center">
-          <Text className="text-slate-500">No expenses recorded for this month.</Text>
+          <Text className="text-moss">No expenses recorded for this month.</Text>
         </View>
       </RenderIf>
 
@@ -55,12 +55,12 @@ export default function CategoryBreakdownScreen() {
         renderItem={({ item }) => (
           <View className="mb-4">
             <View className="mb-1 flex-row justify-between">
-              <Text className="font-medium text-slate-900">{item.category}</Text>
-              <Text className="font-medium text-slate-900">{item.spent.toFixed(2)}</Text>
+              <Text className="font-medium text-ink">{item.category}</Text>
+              <Text className="font-medium text-ink">{item.spent.toFixed(2)}</Text>
             </View>
-            <View className="h-2 overflow-hidden rounded-full bg-slate-100">
+            <View className="h-2 overflow-hidden rounded-full bg-parchment">
               <View
-                className="h-2 rounded-full bg-slate-900"
+                className="h-2 rounded-full bg-forest"
                 style={{ width: `${Math.max(4, (item.spent / maxSpent) * 100)}%` }}
               />
             </View>

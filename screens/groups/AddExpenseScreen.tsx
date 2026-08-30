@@ -242,30 +242,30 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream">
       <ScrollView className="flex-1 px-4 pt-4" contentContainerClassName="gap-4 pb-4">
         <TextInput
           value={description}
           onChangeText={setDescription}
           placeholder={PLACEHOLDERS.expenseDescription}
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <TextInput
           value={amount}
           onChangeText={setAmount}
           placeholder={PLACEHOLDERS.amount}
           keyboardType="decimal-pad"
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <TextInput
           value={category}
           onChangeText={setCategory}
           placeholder={PLACEHOLDERS.expenseCategoryOptional}
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
 
-        <Pressable onPress={() => setShowDatePicker(true)} className="rounded-xl border border-slate-300 px-4 py-3">
-          <Text className="text-base text-slate-900">{date}</Text>
+        <Pressable onPress={() => setShowDatePicker(true)} className="rounded-xl border border-sand px-4 py-3">
+          <Text className="text-base text-ink">{date}</Text>
         </Pressable>
         <RenderIf condition={showDatePicker}>
           <DateTimePicker
@@ -279,7 +279,7 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
           />
         </RenderIf>
 
-        <Text className="text-base font-semibold text-slate-900">Paid by</Text>
+        <Text className="text-base font-semibold text-ink">Paid by</Text>
         <View className="flex-row flex-wrap gap-2">
           {members.map((m) => {
             const selected = paidByUserId === m.userId;
@@ -288,26 +288,26 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
                 key={m.id}
                 onPress={() => setPaidByUserId(m.userId)}
                 className={`rounded-full border px-4 py-2 ${
-                  selected ? 'border-slate-900 bg-slate-900' : 'border-slate-300 bg-white'
+                  selected ? 'border-forest bg-forest' : 'border-sand bg-cream'
                 }`}
               >
-                <Text className={selected ? 'text-white' : 'text-slate-900'}>{m.user.name}</Text>
+                <Text className={selected ? 'text-white' : 'text-ink'}>{m.user.name}</Text>
               </Pressable>
             );
           })}
         </View>
 
-        <Text className="text-base font-semibold text-slate-900">Split</Text>
+        <Text className="text-base font-semibold text-ink">Split</Text>
         <View className="flex-row flex-wrap gap-2">
           {SPLIT_TYPES.map((t) => (
             <Pressable
               key={t}
               onPress={() => setSplitType(t)}
               className={`rounded-xl border px-3 py-2 ${
-                splitType === t ? 'border-slate-900 bg-slate-900' : 'border-slate-300 bg-white'
+                splitType === t ? 'border-forest bg-forest' : 'border-sand bg-cream'
               }`}
             >
-              <Text className={`text-center capitalize ${splitType === t ? 'text-white' : 'text-slate-900'}`}>
+              <Text className={`text-center capitalize ${splitType === t ? 'text-white' : 'text-ink'}`}>
                 {t}
               </Text>
             </Pressable>
@@ -319,11 +319,11 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
             value={rationMetric}
             onChangeText={setRationMetric}
             placeholder={PLACEHOLDERS.rationMetric}
-            className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+            className="rounded-xl border border-sand px-4 py-3 text-base"
           />
         </RenderIf>
 
-        <Text className="text-base font-semibold text-slate-900">Split between</Text>
+        <Text className="text-base font-semibold text-ink">Split between</Text>
         {members.map((m) => {
           const selected = selectedUserIds.includes(m.userId);
           return (
@@ -331,10 +331,10 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
               <Pressable
                 onPress={() => toggleParticipant(m.userId)}
                 className={`flex-1 flex-row items-center justify-between rounded-xl border px-4 py-3 ${
-                  selected ? 'border-slate-900 bg-slate-900' : 'border-slate-300 bg-white'
+                  selected ? 'border-forest bg-forest' : 'border-sand bg-cream'
                 }`}
               >
-                <Text className={selected ? 'text-white' : 'text-slate-900'}>{m.user.name}</Text>
+                <Text className={selected ? 'text-white' : 'text-ink'}>{m.user.name}</Text>
               </Pressable>
               <RenderIf condition={selected && splitType !== 'EQUAL' && splitType !== 'INCOME'}>
                 <TextInput
@@ -342,11 +342,11 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
                   onChangeText={(text) => setWeightInputs((prev) => ({ ...prev, [m.userId]: text }))}
                   placeholder={weightLabel(splitType)}
                   keyboardType="decimal-pad"
-                  className="w-24 rounded-xl border border-slate-300 px-3 py-3 text-base"
+                  className="w-24 rounded-xl border border-sand px-3 py-3 text-base"
                 />
               </RenderIf>
               <RenderIf condition={selected && splitType === 'INCOME' && m.user.monthlyIncome != null}>
-                <Text className="w-24 text-right text-base text-slate-700">{m.user.monthlyIncome}/mo</Text>
+                <Text className="w-24 text-right text-base text-ink/80">{m.user.monthlyIncome}/mo</Text>
               </RenderIf>
               <RenderIf condition={selected && splitType === 'INCOME' && m.user.monthlyIncome == null}>
                 <TextInput
@@ -354,7 +354,7 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
                   onChangeText={(text) => setIncomeInputs((prev) => ({ ...prev, [m.userId]: text }))}
                   placeholder={PLACEHOLDERS.participantMonthlyIncome}
                   keyboardType="decimal-pad"
-                  className="w-28 rounded-xl border border-slate-300 px-3 py-3 text-base"
+                  className="w-28 rounded-xl border border-sand px-3 py-3 text-base"
                 />
               </RenderIf>
             </View>
@@ -362,17 +362,17 @@ export default function AddExpenseScreen({ route, navigation }: Props) {
         })}
 
         <RenderIf condition={splitType === 'EXACT'}>
-          <Text className="text-sm text-slate-500">
+          <Text className="text-sm text-moss">
             Entered: {weightTotal.toFixed(2)} / {Number.isFinite(numericAmount) ? numericAmount.toFixed(2) : '0.00'}
           </Text>
         </RenderIf>
         <RenderIf condition={splitType === 'PERCENT'}>
-          <Text className="text-sm text-slate-500">Entered: {weightTotal.toFixed(2)} / 100</Text>
+          <Text className="text-sm text-moss">Entered: {weightTotal.toFixed(2)} / 100</Text>
         </RenderIf>
 
         <CustomButton buttonText={isEditMode ? 'Save Changes' : 'Add Expense'} onPress={handleSave} />
         <RenderIf condition={isEditMode}>
-          <CustomButton buttonText="Delete Expense" onPress={handleDelete} className="bg-red-600" />
+          <CustomButton buttonText="Delete Expense" onPress={handleDelete} className="bg-coral" />
         </RenderIf>
       </ScrollView>
     </SafeAreaView>

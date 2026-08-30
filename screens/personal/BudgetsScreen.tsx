@@ -85,20 +85,20 @@ export default function BudgetsScreen() {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 bg-white px-4 pt-4">
+    <SafeAreaView edges={['bottom']} className="flex-1 bg-cream px-4 pt-4">
       <View className="mb-4 flex-row items-center justify-between">
         <Pressable onPress={() => setSelectedMonth(shiftMonth(selectedMonth, -1))} className="px-3 py-2">
-          <Text className="text-lg text-slate-900">‹</Text>
+          <Text className="text-lg text-ink">‹</Text>
         </Pressable>
-        <Text className="text-lg font-semibold text-slate-900">{selectedMonth}</Text>
+        <Text className="text-lg font-semibold text-ink">{selectedMonth}</Text>
         <Pressable onPress={() => setSelectedMonth(shiftMonth(selectedMonth, 1))} className="px-3 py-2">
-          <Text className="text-lg text-slate-900">›</Text>
+          <Text className="text-lg text-ink">›</Text>
         </Pressable>
       </View>
 
       <RenderIf condition={progress.length === 0}>
         <View className="flex-1 items-center justify-center">
-          <Text className="text-slate-500">No budgets set for this month.</Text>
+          <Text className="text-moss">No budgets set for this month.</Text>
         </View>
       </RenderIf>
 
@@ -112,17 +112,17 @@ export default function BudgetsScreen() {
             <Pressable
               onPress={() => openEdit(item)}
               onLongPress={() => confirmDelete(item)}
-              className="mb-4 rounded-2xl border border-slate-200 px-4 py-3 active:opacity-70"
+              className="mb-4 rounded-2xl border border-sand px-4 py-3 active:opacity-70"
             >
               <View className="mb-1 flex-row justify-between">
-                <Text className="font-semibold text-slate-900">{item.budget.category}</Text>
-                <Text className={`font-semibold ${overBudget ? 'text-red-600' : 'text-slate-900'}`}>
+                <Text className="font-semibold text-ink">{item.budget.category}</Text>
+                <Text className={`font-semibold ${overBudget ? 'text-coral' : 'text-ink'}`}>
                   {item.spent.toFixed(2)} / {item.budget.monthlyLimit.toFixed(2)}
                 </Text>
               </View>
-              <View className="h-2 overflow-hidden rounded-full bg-slate-100">
+              <View className="h-2 overflow-hidden rounded-full bg-parchment">
                 <View
-                  className={`h-2 rounded-full ${overBudget ? 'bg-red-600' : 'bg-slate-900'}`}
+                  className={`h-2 rounded-full ${overBudget ? 'bg-coral' : 'bg-forest'}`}
                   style={{ width: `${Math.min(100, Math.max(4, ratio * 100))}%` }}
                 />
               </View>
@@ -141,20 +141,20 @@ export default function BudgetsScreen() {
         }}
         contentClassName="rounded-t-3xl px-5 pb-8 pt-5 gap-4"
       >
-        <Text className="text-lg font-bold text-slate-900">{editingId ? 'Edit Budget' : 'New Budget'}</Text>
-        <Text className="text-sm text-slate-500">Month: {selectedMonth}</Text>
+        <Text className="text-lg font-bold text-ink">{editingId ? 'Edit Budget' : 'New Budget'}</Text>
+        <Text className="text-sm text-moss">Month: {selectedMonth}</Text>
         <TextInput
           value={category}
           onChangeText={setCategory}
           placeholder={PLACEHOLDERS.category}
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <TextInput
           value={monthlyLimit}
           onChangeText={setMonthlyLimit}
           placeholder={PLACEHOLDERS.budgetMonthlyLimit}
           keyboardType="decimal-pad"
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <CustomButton buttonText={editingId ? 'Save Changes' : 'Create Budget'} onPress={handleSave} />
       </CustomModal>

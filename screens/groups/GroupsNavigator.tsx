@@ -16,7 +16,10 @@ export default function GroupsNavigator() {
   return (
     <Stack.Navigator
       screenOptions={({ navigation }) => ({
-        headerTintColor: '#0f172a',
+        headerTintColor: '#2B2416',
+        headerStyle: { backgroundColor: '#FBF4E3' },
+        headerTitleStyle: { color: '#2B2416', fontWeight: '700' },
+        headerShadowVisible: false,
         headerLeft: ({ canGoBack }) => (canGoBack ? <HeaderBackButton onPress={() => navigation.goBack()} /> : undefined),
       })}
     >

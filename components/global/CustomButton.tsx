@@ -68,7 +68,7 @@ export default function CustomButton({
   onPress,
   className = '',
   textClassName = '',
-  fillColor = '#0f172a',
+  fillColor = '#4B7A5B',
   showTeeth = false,
 }: CustomButtonProps) {
   const [size, setSize] = useState({ width: 0, height: 0 });

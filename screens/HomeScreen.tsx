@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Pressable, Text, TextInput } from 'react-native';
+import { Image, Pressable, Text, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
@@ -49,13 +49,22 @@ export default function HomeScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView edges={['bottom']} className="flex-1 items-center justify-center gap-4 bg-white px-6">
-      <Text className="mb-4 text-2xl font-bold text-slate-900">Free-SplitWise</Text>
+    <SafeAreaView edges={['bottom']} className="flex-1 items-center justify-center gap-4 bg-cream px-6">
+      <Image
+        source={require('../assets/dino-splash.png')}
+        resizeMode="contain"
+        className="mb-1 h-44 w-44"
+      />
+      <Text className="text-3xl font-extrabold tracking-tight text-forest">Free-SplitWise</Text>
+      <Text className="-mt-3 mb-2 text-sm font-medium text-moss">Track it. Split it. Roar about it.</Text>
 
       {currentUser ? (
-        <Pressable onPress={openProfileModal} className="mb-2 flex-row items-center gap-2">
-          <Text className="text-base text-slate-700">Hi, {currentUser.name}</Text>
-          <Ionicons name="create-outline" size={16} color="#94a3b8" />
+        <Pressable
+          onPress={openProfileModal}
+          className="mb-2 flex-row items-center gap-2 rounded-full border border-sand bg-parchment px-4 py-1.5"
+        >
+          <Text className="text-base text-ink/80">Hi, {currentUser.name}</Text>
+          <Ionicons name="create-outline" size={16} color="#7A6F52" />
         </Pressable>
       ) : (
         <CustomButton buttonText="Set up your profile" onPress={openProfileModal} className="mb-2 w-full" />
@@ -72,6 +81,7 @@ export default function HomeScreen({ navigation }: Props) {
         leftComponent={<Ionicons name={PAGE_ICONS.Groups} size={20} color="white" />}
         onPress={() => navigation.navigate('Groups')}
         className="w-full"
+        fillColor="#8B6FA8"
       />
 
       <CustomModal
@@ -79,19 +89,19 @@ export default function HomeScreen({ navigation }: Props) {
         dismiss={() => setProfileModalVisible(false)}
         contentClassName="rounded-t-3xl px-5 pb-8 pt-5 gap-4"
       >
-        <Text className="text-lg font-bold text-slate-900">Your Profile</Text>
+        <Text className="text-lg font-bold text-ink">Your Profile</Text>
         <TextInput
           value={nameDraft}
           onChangeText={setNameDraft}
           placeholder={PLACEHOLDERS.profileName}
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <TextInput
           value={monthlyIncomeDraft}
           onChangeText={setMonthlyIncomeDraft}
           placeholder={PLACEHOLDERS.monthlyIncome}
           keyboardType="numeric"
-          className="rounded-xl border border-slate-300 px-4 py-3 text-base"
+          className="rounded-xl border border-sand px-4 py-3 text-base"
         />
         <CustomButton buttonText="Save" onPress={handleSaveProfile} />
       </CustomModal>
