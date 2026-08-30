@@ -28,7 +28,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      ["expo-sqlite", { "enableFTS": true, "useSQLCipher": true }],
+      ["expo-sqlite", { "enableFTS": true }],
       ["expo-contacts", { "contactsPermission": "Allow Free-SplitWise to access your contacts." }]
     ]
   }
