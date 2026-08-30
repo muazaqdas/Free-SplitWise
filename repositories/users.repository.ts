@@ -5,6 +5,7 @@ interface UserRow {
   id: string;
   name: string;
   monthlyIncome: number | null;
+  isCurrentUser: number;
   createdAt: string;
   updatedAt: string;
   _syncStatus: string;
@@ -16,6 +17,7 @@ function toUser(row: UserRow): User {
     id: row.id,
     name: row.name,
     monthlyIncome: row.monthlyIncome,
+    isCurrentUser: row.isCurrentUser === 1,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
     _syncStatus: row._syncStatus as User['_syncStatus'],
@@ -40,13 +42,14 @@ export function createUsersRepository(db: AppDatabase) {
       const timestamp = nowIso();
       const monthlyIncome = input.monthlyIncome ?? null;
       await db.runAsync(
-        `INSERT INTO users (id, name, monthlyIncome, createdAt, updatedAt, _syncStatus, isDeleted) VALUES (?, ?, ?, ?, ?, ?, 0);`,
+        `INSERT INTO users (id, name, monthlyIncome, isCurrentUser, createdAt, updatedAt, _syncStatus, isDeleted) VALUES (?, ?, ?, 0, ?, ?, ?, 0);`,
         [id, input.name, monthlyIncome, timestamp, timestamp, 'created']
       );
       return {
         id,
         name: input.name,
         monthlyIncome,
+        isCurrentUser: false,
         createdAt: timestamp,
         updatedAt: timestamp,
         _syncStatus: 'created',
@@ -88,6 +91,34 @@ export function createUsersRepository(db: AppDatabase) {
         'updated',
         id,
       ]);
+    },
+
+    // The row the app treats as "you" — at most one at a time.
+    async getCurrent(): Promise<User | null> {
+      const row = await db.getFirstAsync<UserRow>(
+        `SELECT * FROM users WHERE isCurrentUser = 1 AND isDeleted = 0 LIMIT 1;`
+      );
+      return row ? toUser(row) : null;
+    },
+
+    // Unsets any previous current-user row before setting this one, so the
+    // "at most one" invariant holds without a unique constraint on the column.
+    async setCurrent(id: string): Promise<User> {
+      const existing = await db.getFirstAsync<UserRow>(`SELECT * FROM users WHERE id = ?;`, [id]);
+      if (!existing) {
+        throw new Error(`User not found: ${id}`);
+      }
+      const timestamp = nowIso();
+      await db.runAsync(
+        `UPDATE users SET isCurrentUser = 0, updatedAt = ?, _syncStatus = ? WHERE isCurrentUser = 1 AND id != ?;`,
+        [timestamp, 'updated', id]
+      );
+      await db.runAsync(`UPDATE users SET isCurrentUser = 1, updatedAt = ?, _syncStatus = ? WHERE id = ?;`, [
+        timestamp,
+        'updated',
+        id,
+      ]);
+      return toUser({ ...existing, isCurrentUser: 1, updatedAt: timestamp, _syncStatus: 'updated' });
     },
   };
 }

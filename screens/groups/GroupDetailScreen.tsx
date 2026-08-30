@@ -18,15 +18,57 @@ type Props = NativeStackScreenProps<GroupsStackParamList, 'GroupDetail'>;
 
 export default function GroupDetailScreen({ route, navigation }: Props) {
   const { groupId, groupName } = route.params;
+  const [currentGroupName, setCurrentGroupName] = useState(groupName);
   const [members, setMembers] = useState<GroupMemberWithUser[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
   const [newFriendName, setNewFriendName] = useState('');
+  const [editGroupModalVisible, setEditGroupModalVisible] = useState(false);
+  const [groupNameDraft, setGroupNameDraft] = useState(currentGroupName);
+  const [editingMember, setEditingMember] = useState<{ id: string; name: string } | null>(null);
+  const [memberNameDraft, setMemberNameDraft] = useState('');
 
   useEffect(() => {
-    navigation.setOptions({ title: groupName });
-  }, [groupName, navigation]);
+    navigation.setOptions({
+      title: currentGroupName,
+      headerRight: () => (
+        <Pressable onPress={openEditGroupModal} hitSlop={8}>
+          <Ionicons name="create-outline" size={22} color="#0f172a" />
+        </Pressable>
+      ),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentGroupName, navigation]);
+
+  function openEditGroupModal() {
+    setGroupNameDraft(currentGroupName);
+    setEditGroupModalVisible(true);
+  }
+
+  async function handleRenameGroup() {
+    try {
+      await getGroupsService().renameGroup(groupId, groupNameDraft);
+      setCurrentGroupName(groupNameDraft.trim());
+      setEditGroupModalVisible(false);
+    } catch (error) {
+      showAlert('Cannot rename group', error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  function openEditMemberModal(member: GroupMemberWithUser) {
+    setEditingMember({ id: member.userId, name: member.user.name });
+    setMemberNameDraft(member.user.name);
+  }
+
+  async function handleRenameMember() {
+    if (!editingMember) return;
+    const trimmed = memberNameDraft.trim();
+    if (!trimmed) return;
+    await getUsersRepository().update(editingMember.id, { name: trimmed });
+    setEditingMember(null);
+    await loadMembers();
+  }
 
   const loadMembers = useCallback(async () => {
     setMembers(await getGroupMembersRepository().getByGroup(groupId));
@@ -91,7 +133,14 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
                 key={item.id}
                 className="flex-row items-center justify-between rounded-2xl border border-slate-200 px-4 py-3"
               >
-                <Text className="text-base font-semibold text-slate-900">{item.user.name}</Text>
+                <Pressable
+                  onPress={() => openEditMemberModal(item)}
+                  className="flex-1 flex-row items-center gap-2"
+                  hitSlop={8}
+                >
+                  <Text className="text-base font-semibold text-slate-900">{item.user.name}</Text>
+                  <Ionicons name="create-outline" size={16} color="#94a3b8" />
+                </Pressable>
                 <Pressable onPress={() => handleRemoveMember(item.id, item.userId)}>
                   <Text className="text-sm font-medium text-red-600">Remove</Text>
                 </Pressable>
@@ -175,6 +224,40 @@ export default function GroupDetailScreen({ route, navigation }: Props) {
             )}
           />
         </RenderIf>
+      </CustomModal>
+
+      <CustomModal
+        visible={editGroupModalVisible}
+        dismiss={() => setEditGroupModalVisible(false)}
+        contentClassName="rounded-t-3xl px-5 pb-8 pt-5 gap-4"
+      >
+        <Text className="text-lg font-bold text-slate-900">Rename Group</Text>
+        <View className="flex-row gap-2">
+          <TextInput
+            value={groupNameDraft}
+            onChangeText={setGroupNameDraft}
+            placeholder="Group name"
+            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
+          />
+          <CustomButton buttonText="Save" onPress={handleRenameGroup} />
+        </View>
+      </CustomModal>
+
+      <CustomModal
+        visible={editingMember !== null}
+        dismiss={() => setEditingMember(null)}
+        contentClassName="rounded-t-3xl px-5 pb-8 pt-5 gap-4"
+      >
+        <Text className="text-lg font-bold text-slate-900">Rename Member</Text>
+        <View className="flex-row gap-2">
+          <TextInput
+            value={memberNameDraft}
+            onChangeText={setMemberNameDraft}
+            placeholder="Member's name"
+            className="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-base"
+          />
+          <CustomButton buttonText="Save" onPress={handleRenameMember} />
+        </View>
       </CustomModal>
     </SafeAreaView>
   );

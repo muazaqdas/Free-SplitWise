@@ -40,6 +40,24 @@ export function createGroupsService(
       return group;
     },
 
+    async renameGroup(groupId: string, name: string): Promise<Group> {
+      const trimmed = name.trim();
+      if (trimmed.length === 0) {
+        throw new Error('Give the group a name.');
+      }
+      const group = await groupsRepo.update(groupId, { name: trimmed });
+
+      await activityLogRepo.create({
+        groupId,
+        entityType: 'GROUP',
+        entityId: groupId,
+        action: 'UPDATED',
+        description: `Group renamed to "${trimmed}"`,
+      });
+
+      return group;
+    },
+
     // Guards against removing someone mid-debt: expense_splits/settlements
     // reference userId directly, not group_members, so a plain removal would
     // silently orphan their balance — they'd disappear from the member list

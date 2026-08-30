@@ -92,4 +92,42 @@ describe('usersRepository', () => {
     expect(found?.updatedAt).toBe('2026-01-02T00:00:00.000Z');
     expect(found?._syncStatus).toBe('updated');
   });
+
+  it('creates a user with isCurrentUser false by default', async () => {
+    const user = await repo.create({ name: 'Ada' });
+    expect(user.isCurrentUser).toBe(false);
+  });
+
+  it('getCurrent returns null when no user is flagged current', async () => {
+    await repo.create({ name: 'Ada' });
+    expect(await repo.getCurrent()).toBeNull();
+  });
+
+  it('setCurrent flags a user as current and getCurrent returns it', async () => {
+    const ada = await repo.create({ name: 'Ada' });
+
+    jest.setSystemTime(new Date('2026-01-02T00:00:00.000Z'));
+    const updated = await repo.setCurrent(ada.id);
+
+    expect(updated.isCurrentUser).toBe(true);
+    expect(updated.updatedAt).toBe('2026-01-02T00:00:00.000Z');
+    expect(updated._syncStatus).toBe('updated');
+    expect((await repo.getCurrent())?.id).toBe(ada.id);
+  });
+
+  it('setCurrent unsets the previous current user (at most one at a time)', async () => {
+    const ada = await repo.create({ name: 'Ada' });
+    const grace = await repo.create({ name: 'Grace' });
+
+    await repo.setCurrent(ada.id);
+    await repo.setCurrent(grace.id);
+
+    const current = await repo.getCurrent();
+    expect(current?.id).toBe(grace.id);
+    expect((await repo.getById(ada.id))?.isCurrentUser).toBe(false);
+  });
+
+  it('throws when setCurrent targets an unknown id', async () => {
+    await expect(repo.setCurrent('does-not-exist')).rejects.toThrow();
+  });
 });

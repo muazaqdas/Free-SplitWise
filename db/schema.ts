@@ -4,6 +4,7 @@ export const SCHEMA_STATEMENTS: string[] = [
     id TEXT PRIMARY KEY,
     name TEXT,
     monthlyIncome REAL,
+    isCurrentUser INTEGER DEFAULT 0,
     createdAt TEXT,
     updatedAt TEXT,
     _syncStatus TEXT,

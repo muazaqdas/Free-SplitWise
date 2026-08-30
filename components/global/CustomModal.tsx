@@ -41,18 +41,24 @@ export default function CustomModal({
   return (
     <View className="absolute inset-0" style={{ zIndex: 999, elevation: 999 }}>
       <TouchableWithoutFeedback onPress={() => !isOutsideTouchCloseDisabled && dismiss()}>
-        <View className={`flex-1 justify-end ${overlayClassName}`}>
+        <Animated.View
+          className={`flex-1 justify-end bg-black/50 ${overlayClassName}`}
+          style={{ opacity: translateY.interpolate({ inputRange: [0, height], outputRange: [1, 0] }) }}
+        >
           <KeyboardAvoidingView className="w-full">
             <TouchableWithoutFeedback>
               <Animated.View
-                className={`w-full bg-white ${contentClassName}`}
+                className={`w-full bg-white shadow-2xl shadow-black/40 ${contentClassName}`}
                 style={{ transform: [{ translateY }], marginBottom: insets.bottom }}
               >
+                <View className="items-center pb-1 pt-2">
+                  <View className="h-1.5 w-12 rounded-full bg-slate-300" />
+                </View>
                 {children}
               </Animated.View>
             </TouchableWithoutFeedback>
           </KeyboardAvoidingView>
-        </View>
+        </Animated.View>
       </TouchableWithoutFeedback>
     </View>
   );

@@ -111,6 +111,37 @@ describe('groups create flow (dry run against real DB)', () => {
     expect(await usersRepo.getAll()).toHaveLength(2);
   });
 
+  it('renameGroup trims the name, persists it, and logs a GROUP activity entry', async () => {
+    const group = await service.createWithMembers({
+      name: 'Roommates',
+      memberUserIds: [(await usersRepo.create({ name: 'Ralph' })).id],
+    });
+
+    const renamed = await service.renameGroup(group.id, '  Old Roommates  ');
+
+    expect(renamed.name).toBe('Old Roommates');
+    expect((await groupsRepo.getById(group.id))?.name).toBe('Old Roommates');
+
+    const activityLogRepo = createActivityLogRepository(db);
+    const [entry] = await activityLogRepo.getByGroup(group.id);
+    expect(entry).toMatchObject({
+      entityType: 'GROUP',
+      entityId: group.id,
+      action: 'UPDATED',
+      description: 'Group renamed to "Old Roommates"',
+    });
+  });
+
+  it('rejects renaming a group to an empty name without writing anything', async () => {
+    const group = await service.createWithMembers({
+      name: 'Roommates',
+      memberUserIds: [(await usersRepo.create({ name: 'Ralph' })).id],
+    });
+
+    await expect(service.renameGroup(group.id, '   ')).rejects.toThrow('Give the group a name.');
+    expect((await groupsRepo.getById(group.id))?.name).toBe('Roommates');
+  });
+
   it('validateCreateGroupInput surfaces name error before the member error', () => {
     expect(validateCreateGroupInput({ name: '', memberUserIds: [] })).toBe('Give the group a name.');
     expect(validateCreateGroupInput({ name: 'Trip', memberUserIds: [] })).toBe('Select at least one member.');

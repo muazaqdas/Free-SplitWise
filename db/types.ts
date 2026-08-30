@@ -14,6 +14,7 @@ export interface User {
   id: string;
   name: string;
   monthlyIncome: number | null;
+  isCurrentUser: boolean;
   createdAt: string;
   updatedAt: string;
   _syncStatus: SyncStatus;
@@ -117,7 +118,7 @@ export interface Settlement {
   isDeleted: boolean;
 }
 
-export type ActivityEntityType = 'EXPENSE' | 'SETTLEMENT' | 'GROUP_MEMBER';
+export type ActivityEntityType = 'EXPENSE' | 'SETTLEMENT' | 'GROUP_MEMBER' | 'GROUP';
 export type ActivityAction = 'CREATED' | 'UPDATED' | 'DELETED';
 
 export interface ActivityLogEntry {

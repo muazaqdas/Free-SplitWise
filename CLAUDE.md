@@ -59,11 +59,25 @@ draft here).
 id TEXT PRIMARY KEY        -- uuid
 name TEXT
 monthlyIncome REAL NULL    -- private, used only for income-based splits
+isCurrentUser INTEGER DEFAULT 0  -- at most one row; the device owner, distinct from friends (Module 3 follow-up)
 createdAt TEXT
 updatedAt TEXT
 _syncStatus TEXT           -- 'created' | 'updated' | 'synced'
 isDeleted INTEGER DEFAULT 0
 ```
+`isCurrentUser` added after Module 3 — not in the original draft of this
+section. Every `users` row was previously symmetric (friends and the app's
+own owner created identically via "Add Member"), with no way for the Home
+screen to say "you." This is a self-identification flag for personalization
+only (Home screen greeting, pre-filling "your" `monthlyIncome` for INCOME
+splits) — it is **not** auth: no login, no gating, nothing is protected by
+it, and the "Auth / accounts: None" row in Section 2 still holds. `users`
+already existed and was writable with no login required; this just marks
+which existing row is "me." `repositories/users.repository.ts` enforces
+"at most one" via `getCurrent()`/`setCurrent()`. Existing on-device
+databases get the column via an `ALTER TABLE` migration in `db/index.ts`
+(`CREATE TABLE IF NOT EXISTS` alone doesn't add columns to a table that
+already exists on a device).
 
 ### `groups`
 ```

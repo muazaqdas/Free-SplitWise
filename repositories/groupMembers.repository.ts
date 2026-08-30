@@ -10,6 +10,7 @@ interface GroupMemberRow {
 interface GroupMemberWithUserRow extends GroupMemberRow {
   name: string;
   monthlyIncome: number | null;
+  isCurrentUser: number;
   createdAt: string;
   updatedAt: string;
   _syncStatus: string;
@@ -29,6 +30,7 @@ function toGroupMemberWithUser(row: GroupMemberWithUserRow): GroupMemberWithUser
       id: row.userId,
       name: row.name,
       monthlyIncome: row.monthlyIncome,
+      isCurrentUser: row.isCurrentUser === 1,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
       _syncStatus: row._syncStatus as User['_syncStatus'],
@@ -70,7 +72,7 @@ export function createGroupMembersRepository(db: AppDatabase) {
     async getByGroup(groupId: string): Promise<GroupMemberWithUser[]> {
       const rows = await db.getAllAsync<GroupMemberWithUserRow>(
         `SELECT gm.id as id, gm.groupId as groupId, gm.userId as userId,
-                u.name as name, u.monthlyIncome as monthlyIncome,
+                u.name as name, u.monthlyIncome as monthlyIncome, u.isCurrentUser as isCurrentUser,
                 u.createdAt as createdAt, u.updatedAt as updatedAt,
                 u._syncStatus as _syncStatus, u.isDeleted as isDeleted
          FROM group_members gm

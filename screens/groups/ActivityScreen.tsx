@@ -13,12 +13,12 @@ type Props = NativeStackScreenProps<GroupsStackParamList, 'Activity'>;
 // Module 9: chronological audit log. EXPENSE/SETTLEMENT entries store only
 // ids and a bare description (e.g. "Dinner ($90.00)") — names are resolved
 // here from the group's *current* member list, same as BalancesScreen's
-// nameFor(). GROUP_MEMBER entries are the exception: the removed person is
-// gone from that member list by the time this renders, so groups.service
-// bakes their name into `description` directly at write time — rendered
-// as-is here, not passed through nameFor().
+// nameFor(). GROUP_MEMBER and GROUP entries are the exception: a removed
+// member is gone from that member list by the time this renders, and a
+// rename has no single subject user, so groups.service bakes full text into
+// `description` directly at write time — rendered as-is here.
 function activityLine(entry: ActivityLogEntry, nameFor: (userId: string) => string): string {
-  if (entry.entityType === 'GROUP_MEMBER') return entry.description;
+  if (entry.entityType === 'GROUP_MEMBER' || entry.entityType === 'GROUP') return entry.description;
 
   const primary = entry.primaryUserId ? nameFor(entry.primaryUserId) : 'Someone';
   const secondary = entry.secondaryUserId ? nameFor(entry.secondaryUserId) : null;
